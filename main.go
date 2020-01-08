@@ -7,19 +7,18 @@ import (
 	"time"
 )
 
-func cleanHouse() {
-	fmt.Print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
+func init() {
 }
 
 func main() {
-	//cleanHouse()
-	countDown()
+	countDown(3)
+	beginTest()
+}
 
+func beginTest() {
 	start := time.Now()
 
-	reader := bufio.NewReader(os.Stdin)
-
-	inputString, readError := reader.ReadString('\n')
+	inputString, readError := read()
 
 	elapsed := time.Since(start)
 
@@ -33,12 +32,17 @@ func main() {
 	fmt.Print("\n")
 }
 
-func countDown() {
-	println("3")
-	time.Sleep(time.Second)
-	println("2")
-	time.Sleep(time.Second)
-	println("1")
-	time.Sleep(time.Second)
+func read() (string, error) {
+	reader := bufio.NewReader(os.Stdin)
+	str, err := reader.ReadString('\n')
+	return str, err
+}
+
+func countDown(i int) {
+	for i > 0 {
+		fmt.Println(i)
+		time.Sleep(time.Second)
+		i--
+	}
 	println("Go!")
 }
