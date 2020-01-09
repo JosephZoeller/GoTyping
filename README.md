@@ -1,12 +1,7 @@
 # Project 0
-A Go CLI program of your choosing. 
+##Typing Test
 
-Suggestions: 
-- a unique implementation of a popular CLI tool (i.e. `tree`, `grep`) 
-- a concurrent key-value data store
-- a wrapper tool for a more complex program
-- a journal/note-taking app
-- a web server with HTML templates and forms
+This interactive CLI Program allows the user to test their typing skills. 
 
 ## Features
 - [ ] Documentation
