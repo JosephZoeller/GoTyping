@@ -21,7 +21,7 @@ func runTest() {
 	timer.BeginStopWatch()
 	inputString, readError := read()
 	timer.PauseStopWatch()
-	elapsedTime := timer.CheckStopWatch()
+	elapsedTime, _ := timer.CheckStopWatch()
 
 	if readError != nil {
 		fmt.Println(readError)
