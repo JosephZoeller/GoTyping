@@ -6,11 +6,16 @@ import (
 )
 
 //CountDown accepts an integer to count down from in seconds. The function will print the remaining seconds left, every second, and then prints "Go!"
-func CountDown(n int) {
+func CountDown(n int) error {
+	var err error
 	for n > 0 {
-		fmt.Println(n)
+		_, err = fmt.Println(n)
+		if (err != nil) {
+			return err
+		}
 		time.Sleep(time.Second)
 		n--
 	}
-	println("Go!")
+	_, err = fmt.Println("Go!")
+	return err
 }

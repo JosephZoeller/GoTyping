@@ -30,11 +30,11 @@ func PauseStopWatch() error {
 }
 
 //CheckStopWatch returns the elapsed time in seconds that the stopwatch has been running. It can return the elapsed time even if the stopwatch is paused.
-func CheckStopWatch() float64 {
+func CheckStopWatch() (float64, bool) {
 	if isTiming {
-		return time.Since(startTime).Seconds() + totalTime.Seconds()
+		return time.Since(startTime).Seconds() + totalTime.Seconds(), isTiming
 	}
-	return totalTime.Seconds()
+	return totalTime.Seconds(), isTiming
 }
 
 // ResetStopWatch resets the stopwatch, restarting the elapsed time.
