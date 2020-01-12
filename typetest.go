@@ -6,8 +6,9 @@ import (
 	"os"
 	"strings"
 
-	//"github.com/JosephZoeller/project-0/stringstats"
+	"github.com/JosephZoeller/project-0/stringstats"
 	"github.com/JosephZoeller/project-0/timer"
+	"github.com/nsf/termbox-go"
 )
 
 var user *string
@@ -25,13 +26,18 @@ func runTest() {
 	timer.ResetStopWatch()
 	tbCountDown(3)
 	timer.BeginStopWatch()
-	// do test
-	readWord()
+	c := stringstats.CountWords(readSentence())
 	timer.PauseStopWatch()
+	t, _ := timer.CheckStopWatch()
+	tbprintStats(c, t)
+	pressAnyKey()
 }
 
-func printStats() {
-	fmt.Println("Seconds to complete:")
-	fmt.Println("Words per second:")
-	fmt.Println("Words per minute:")
+func tbprintStats(c int, t float64) {
+	cfl := float64(c)
+	termbox.Clear(coldef, coldef)
+	tbMessage(0, 0, consoleWidth, termbox.ColorBlue, coldef, fmt.Sprintf("Words written: %d", c))
+	tbMessage(0, 1, consoleWidth, termbox.ColorBlue, coldef, fmt.Sprintf("Seconds to complete: %f", t))
+	tbMessage(0, 2, consoleWidth, termbox.ColorBlue, coldef, fmt.Sprintf("Words per second: %f", cfl/t))
+	tbMessage(0, 3, consoleWidth, termbox.ColorBlue, coldef, fmt.Sprintf("Words per minute: %f", cfl/t*60))
 }
