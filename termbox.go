@@ -71,11 +71,11 @@ var keyevent = ""
 
 func readLoop() int {
 	t := 0.00
-mainLoop:
+mainLoop: // logic heavily inspired by termbox-go demo, editbox.go
 	for {
 		evt := termbox.PollEvent()
 		t, _ = timer.CheckStopWatch() //kludge: currently the only thing I can think of to keep users from preempting words into console during the countdown
-		if t >= 0.1 {				  // TODO find proper solution
+		if t >= 0.1 {                 // TODO find proper solution
 			switch evt.Type {
 			case termbox.EventKey:
 				switch evt.Key {
