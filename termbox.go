@@ -1,11 +1,11 @@
 package main
 
 import (
-	"github.com/JosephZoeller/project-0/timer"
-
-	//"fmt"
+	"fmt"
 	"strconv"
 	"time"
+
+	"github.com/JosephZoeller/project-0/timer"
 
 	"github.com/nsf/termbox-go"
 )
@@ -23,6 +23,10 @@ func tbMessage(xCell int, yCell int, textWidth int, foreColor termbox.Attribute,
 		} else {
 			i++
 		}
+	}
+	for i < textWidth {
+		termbox.SetCell(i, yCell, ' ', foreColor, backColor)
+		i++
 	}
 	termbox.Flush()
 }
@@ -60,52 +64,94 @@ func pressAnyKey() rune {
 	}
 }
 
-var cursor int
+var snt string = ""
+var wrds = make([]string, 0)
+var crntwrd = ""
+var keyevent = ""
 
-func readSentence() string {
-	snt := ""
-readSentenceLoop:
+func readLoop() int {
+	t := 0.00
+mainLoop:
 	for {
-		s, ev := readWord()
-		switch ev.Type {
-		case termbox.EventKey:
-			switch ev.Key {
-			case termbox.KeyEnter, termbox.KeyEsc:
-				snt += s
-				break readSentenceLoop
-			case termbox.KeySpace:
-				snt += s + " "
+		evt := termbox.PollEvent()
+		t, _ = timer.CheckStopWatch() //kludge: currently the only thing I can think of to keep users from preempting words into console during the countdown
+		if t >= 0.1 {				  // TODO find proper solution
+			switch evt.Type {
+			case termbox.EventKey:
+				switch evt.Key {
+				case termbox.KeyEsc:
+					break mainLoop
+				case termbox.KeyEnter:
+					newLine()
+					keyevent = "[Enter]"
+				case termbox.KeySpace:
+					space()
+					keyevent = "[Space]"
+				case termbox.KeyBackspace2, termbox.KeyBackspace:
+					backspace()
+					keyevent = "[Backspace]"
+				default:
+					addRune(evt.Ch)
+					keyevent = "[AddRune]"
+				}
+			case termbox.EventError:
+				// expand
+				break mainLoop
 			}
+			redraw()
 		}
 	}
-	tbMessage(0, 0, consoleWidth, coldef, coldef, snt)
-	return snt
+	return len(wrds)
 }
 
-func readWord() (string, termbox.Event) {
-	r := make([]rune, 0)
-	var swt float64
-	var ev termbox.Event
-readWordLoop:
-	for {
-		ev = termbox.PollEvent()
-		switch ev.Type {
-		case termbox.EventKey:
-			switch ev.Key {
-			case termbox.KeySpace, termbox.KeyEsc, termbox.KeyEnter:
-				break readWordLoop
-			default:
-				tbMessage(0, 1, consoleWidth, coldef, coldef, strconv.QuoteRune(ev.Ch))
-				r = append(r, ev.Ch)
-			}
+func addRune(r rune) {
+	s := string(r)
+	crntwrd += s
+	snt += s
+}
+
+func newLine() {
+	if len(snt) <= 0 {
+		return
+	}
+	if crntwrd != "" {
+		wrds = append(wrds, crntwrd)
+	}
+	snt = ""
+	crntwrd = ""
+}
+
+func space() {
+	if len(snt) <= 0 {
+		return
+	}
+	wrds = append(wrds, crntwrd)
+	snt += " "
+	crntwrd = ""
+}
+
+func backspace() {
+	lensnt := len(snt)
+	if lensnt <= 0 {
+		return
+	}
+	if snt[lensnt-1] == ' ' {
+		if len(wrds) > 0 {
+			crntwrd = wrds[len(wrds)-1]
+		} else {
+			crntwrd = ""
 		}
+		wrds = wrds[:len(wrds)-1]
+	} else if len(crntwrd) > 0 {
+		crntwrd = crntwrd[:len(crntwrd)-1]
 	}
-	// If the user has input entire words within a tenth of a second, it's reasonable to assume that they had preemptively typed something during the countdown.
-	// this a kludge but I haven't figured out a way of denying or ignoring user input during the countdown, so in the interest of time, this is the best alternative.
-	swt, _ = timer.CheckStopWatch()
-	if swt < 0.1 {
-		r = make([]rune, 0)
-		goto readWordLoop
-	}
-	return string(r), ev
+	snt = snt[:lensnt-1]
+}
+
+func redraw() {
+	tbMessage(0, 1, consoleWidth, coldef, coldef, snt)
+
+	tbMessage(0, 3, consoleWidth, coldef, coldef, ("Event: " + keyevent))
+	tbMessage(0, 4, consoleWidth, coldef, coldef, fmt.Sprintf("Word Bank: %s", wrds))
+	tbMessage(0, 5, consoleWidth, coldef, coldef, "Current word: "+crntwrd)
 }

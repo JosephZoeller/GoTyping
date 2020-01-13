@@ -6,7 +6,6 @@ import (
 	"os"
 	"strings"
 
-	"github.com/JosephZoeller/project-0/stringstats"
 	"github.com/JosephZoeller/project-0/timer"
 	"github.com/nsf/termbox-go"
 )
@@ -26,10 +25,10 @@ func runTest() {
 	timer.ResetStopWatch()
 	tbCountDown(3)
 	timer.BeginStopWatch()
-	c := stringstats.CountWords(readSentence())
+	c := readLoop()
 	timer.PauseStopWatch()
 	t, _ := timer.CheckStopWatch()
-	tbprintStats(c, t)
+	tbprintStats(c, t) // get count
 	pressAnyKey()
 }
 
