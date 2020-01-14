@@ -13,10 +13,15 @@ import (
 const consoleWidth int = 60
 const coldef termbox.Attribute = termbox.ColorDefault
 
-func tbMessage(xCell int, yCell int, textWidth int, foreColor termbox.Attribute, backColor termbox.Attribute, message string) {
+func tbMessage(xCell int, yCell int, textWidth int, foreColor termbox.Attribute, backColor termbox.Attribute, message string, showCursor bool) {
 	i := xCell
 	for _, char := range message {
 		termbox.SetCell(i, yCell, char, foreColor, backColor)
+		if showCursor {
+			termbox.SetCursor(i, yCell)
+		} else {
+			termbox.HideCursor() // will require cursor-enabled message to come last when drawing a number of messages 
+		}
 		if char == '\n' || i > textWidth && char == ' ' {
 			yCell++
 			i = xCell
@@ -33,12 +38,13 @@ func tbMessage(xCell int, yCell int, textWidth int, foreColor termbox.Attribute,
 
 func preface() {
 	termbox.Clear(coldef, coldef)
+	width, _ := termbox.Size()
 	c := 3
 	s := "Welcome to my typing speed test, " + *user +
 		". This program will count down from " + strconv.Itoa(c) +
 		", and then it will measure how fast you can type words." +
 		"\n" + "When you're ready, press any key to begin..."
-	tbMessage(0, 0, consoleWidth, termbox.ColorBlue, coldef, s)
+	tbMessage(0, 0, width, termbox.ColorBlue, coldef, s, true)
 	termbox.Flush()
 	pressAnyKey()
 }
@@ -46,11 +52,10 @@ func preface() {
 func tbCountDown(n int) {
 	termbox.Clear(coldef, coldef)
 	for n > 0 {
-		tbMessage(0, 0, consoleWidth, coldef, coldef, strconv.Itoa(n))
+		tbMessage(0, 0, 1, coldef, coldef, strconv.Itoa(n), false)
 		time.Sleep(time.Second)
 		n--
 	}
-	tbMessage(0, 0, consoleWidth, coldef, coldef, "Go!")
 }
 
 func pressAnyKey() rune {
@@ -69,7 +74,7 @@ var wrds = make([]string, 0)
 var crntwrd = ""
 var keyevent = ""
 
-func readLoop() int {
+func readLoop() (int, int) {
 	t := 0.00
 mainLoop: // logic heavily inspired by termbox-go demo, editbox.go
 	for {
@@ -101,7 +106,7 @@ mainLoop: // logic heavily inspired by termbox-go demo, editbox.go
 			redraw()
 		}
 	}
-	return len(wrds)
+	return len(wrds), len(snt)
 }
 
 func addRune(r rune) {
@@ -117,17 +122,18 @@ func newLine() {
 	if crntwrd != "" {
 		wrds = append(wrds, crntwrd)
 	}
-	snt = ""
+	//snt = "" not sure if I need/want this
 	crntwrd = ""
 }
 
 func space() {
 	if len(snt) <= 0 {
 		return
+	} else if (len(crntwrd) > 0) {
+		wrds = append(wrds, crntwrd)
+		snt += " "
+		crntwrd = ""
 	}
-	wrds = append(wrds, crntwrd)
-	snt += " "
-	crntwrd = ""
 }
 
 func backspace() {
@@ -149,9 +155,12 @@ func backspace() {
 }
 
 func redraw() {
-	tbMessage(0, 1, consoleWidth, coldef, coldef, snt)
+	sntY := 1
+	width, _  := termbox.Size()
 
-	tbMessage(0, 3, consoleWidth, coldef, coldef, ("Event: " + keyevent))
-	tbMessage(0, 4, consoleWidth, coldef, coldef, fmt.Sprintf("Word Bank: %s", wrds))
-	tbMessage(0, 5, consoleWidth, coldef, coldef, "Current word: "+crntwrd)
+	tbMessage(0, 3, width, coldef, coldef, ("Event: " + keyevent), false)
+	tbMessage(0, 4, width, coldef, coldef, fmt.Sprintf("Word Bank: %s", wrds), false)
+	tbMessage(0, 5, width, coldef, coldef, "Current word: "+crntwrd, false)
+
+	tbMessage(0, sntY, width, coldef, coldef, snt, true)
 }
