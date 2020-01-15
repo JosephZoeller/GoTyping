@@ -14,5 +14,9 @@ func main() {
 	termbox.SetInputMode(termbox.InputEsc)
 
 	preface()
-	runTest()
+	if (*freestyle) {
+		runTest()
+	} else {
+		runSentenceTest()
+	}
 }
