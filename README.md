@@ -7,12 +7,12 @@ This interactive CLI Program allows the user to test their typing skills using [
 - [ ] Unit testing
 - [ ] Benchmarking
 - [ ] Logging
-- [ ] API Library (Stopwatch, countdown)
-- [ ] CLI flags (Timer, freestyle/sentence reference)
+- [X] API Library (Stopwatch, countdown)
+- [x] CLI flags (Timer, freestyle/sentence reference)
 - [x] Environment variables (user)
-- [ ] Concurrency (Timer)
-- [ ] Data Persistance (reference sentences, user averages/statistics)
-- [ ] HTTP/HTTPS API (user averages/statistics)
+- [x] Concurrency (Timer)
+- [x] Data Persistance (reference sentences, TODO user averages/statistics)
+- [ ] HTTP/HTTPS API (TODO user averages/statistics)
 
 ## Presentation
 - [ ] 5 minute live demonstration
