@@ -18,7 +18,7 @@ func tbMessage(xCell int, yCell int, foreColor termbox.Attribute, backColor term
 	textWidth, _ := termbox.Size()
 	for _, char := range message {
 		termbox.SetCell(i, yCell, char, foreColor, backColor)
-		if char == '\n' || i > textWidth && char == ' ' {
+		if i > textWidth && char == ' ' {
 			yCell++
 			i = xCell
 		} else {
@@ -111,6 +111,51 @@ mainLoop: // logic heavily inspired by termbox-go demo, editbox.go
 		cl += len(wrd)
 	}
 	return len(wrds), cl
+}
+
+func readLoopSentence(sdur int) (int, int, []string) {
+	t := 0.00
+mainLoop: // logic heavily inspired by termbox-go demo, editbox.go
+	for {
+		evt := termbox.PollEvent()
+		t, _ = timer.CheckStopWatch()
+		if t >= float64(sdur) {
+			newLine()
+			break mainLoop
+		}
+		if t >= 0.1 {
+			switch evt.Type {
+			case termbox.EventKey:
+				switch evt.Key {
+				case termbox.KeyEsc:
+					break mainLoop
+				case termbox.KeyEnter:
+					newLine()
+					redraw()
+					keyevent = "[Enter]"
+					break mainLoop
+				case termbox.KeySpace:
+					space()
+					keyevent = "[Space]"
+				case termbox.KeyBackspace2, termbox.KeyBackspace:
+					backspace()
+					keyevent = "[Backspace]"
+				default:
+					addRune(evt.Ch)
+					keyevent = "[AddRune]"
+				}
+			case termbox.EventError:
+				// expand
+				break mainLoop
+			}
+			redraw()
+		}
+	}
+	cl := len(wrds) - 1 //# spaces between words
+	for _, wrd := range wrds {
+		cl += len(wrd)
+	}
+	return len(wrds), cl, wrds
 }
 
 func addRune(r rune) {
