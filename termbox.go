@@ -13,15 +13,11 @@ import (
 const consoleWidth int = 60
 const coldef termbox.Attribute = termbox.ColorDefault
 
-func tbMessage(xCell int, yCell int, textWidth int, foreColor termbox.Attribute, backColor termbox.Attribute, message string, showCursor bool) {
+func tbMessage(xCell int, yCell int, foreColor termbox.Attribute, backColor termbox.Attribute, message string) (int, int) {
 	i := xCell
+	textWidth, _ := termbox.Size()
 	for _, char := range message {
 		termbox.SetCell(i, yCell, char, foreColor, backColor)
-		if showCursor {
-			termbox.SetCursor(i, yCell)
-		} else {
-			termbox.HideCursor() // will require cursor-enabled message to come last when drawing a number of messages 
-		}
 		if char == '\n' || i > textWidth && char == ' ' {
 			yCell++
 			i = xCell
@@ -29,42 +25,42 @@ func tbMessage(xCell int, yCell int, textWidth int, foreColor termbox.Attribute,
 			i++
 		}
 	}
-	for i < textWidth {
-		termbox.SetCell(i, yCell, ' ', foreColor, backColor)
-		i++
+	for j := i; j < textWidth; j++ {
+		termbox.SetCell(j, yCell, ' ', foreColor, backColor)
 	}
 	termbox.Flush()
+	return i, yCell
 }
 
 func preface() {
 	termbox.Clear(coldef, coldef)
-	width, _ := termbox.Size()
 	c := 3
 	s := "Welcome to my typing speed test, " + *user +
 		". This program will count down from " + strconv.Itoa(c) +
 		", and then it will measure how fast you can type words." +
 		"\n" + "When you're ready, press any key to begin..."
-	tbMessage(0, 0, width, termbox.ColorBlue, coldef, s, true)
-	termbox.Flush()
-	pressAnyKey()
+	tbMessage(0, 0, termbox.ColorBlue, coldef, s)
+	keyContinue(false)
 }
 
-func tbCountDown(n int) {
-	termbox.Clear(coldef, coldef)
+func tbCountDown(n, x, y int, frmt string) {
 	for n > 0 {
-		tbMessage(0, 0, 1, coldef, coldef, strconv.Itoa(n), false)
+		tbMessage(x, y, coldef, coldef, fmt.Sprintf(frmt, strconv.Itoa(n)))
 		time.Sleep(time.Second)
 		n--
 	}
+	tbMessage(x, y, coldef, coldef, fmt.Sprintf(frmt, "0"))
 }
 
-func pressAnyKey() rune {
+func keyContinue(reqEnter bool) rune {
 
 	for {
 		ev := termbox.PollEvent()
-		switch ev.Type {
-		case termbox.EventKey:
-			return ev.Ch
+		if ev.Type == termbox.EventKey {
+			if !reqEnter || ev.Key == termbox.KeyEnter {
+				termbox.Clear(coldef, coldef)
+				return ev.Ch
+			}
 		}
 	}
 }
@@ -74,13 +70,17 @@ var wrds = make([]string, 0)
 var crntwrd = ""
 var keyevent = ""
 
-func readLoop() (int, int) {
+func readLoop(sdur int) (int, int) {
 	t := 0.00
 mainLoop: // logic heavily inspired by termbox-go demo, editbox.go
 	for {
 		evt := termbox.PollEvent()
-		t, _ = timer.CheckStopWatch() //kludge: currently the only thing I can think of to keep users from preempting words into console during the countdown
-		if t >= 0.1 {                 // TODO find proper solution
+		t, _ = timer.CheckStopWatch()
+		if t >= float64(sdur) {
+			newLine()
+			break mainLoop
+		}
+		if t >= 0.1 {
 			switch evt.Type {
 			case termbox.EventKey:
 				switch evt.Key {
@@ -106,7 +106,11 @@ mainLoop: // logic heavily inspired by termbox-go demo, editbox.go
 			redraw()
 		}
 	}
-	return len(wrds), len(snt)
+	cl := len(wrds) - 1 //# spaces between words
+	for _, wrd := range wrds {
+		cl += len(wrd)
+	}
+	return len(wrds), cl
 }
 
 func addRune(r rune) {
@@ -122,14 +126,14 @@ func newLine() {
 	if crntwrd != "" {
 		wrds = append(wrds, crntwrd)
 	}
-	//snt = "" not sure if I need/want this
+	snt = ""
 	crntwrd = ""
 }
 
 func space() {
 	if len(snt) <= 0 {
 		return
-	} else if (len(crntwrd) > 0) {
+	} else if len(crntwrd) > 0 {
 		wrds = append(wrds, crntwrd)
 		snt += " "
 		crntwrd = ""
@@ -155,12 +159,10 @@ func backspace() {
 }
 
 func redraw() {
-	sntY := 1
-	width, _  := termbox.Size()
+	sntX, sntY := tbMessage(0, 1, coldef, coldef, snt)
+	termbox.SetCursor(sntX, sntY)
 
-	tbMessage(0, 3, width, coldef, coldef, ("Event: " + keyevent), false)
-	tbMessage(0, 4, width, coldef, coldef, fmt.Sprintf("Word Bank: %s", wrds), false)
-	tbMessage(0, 5, width, coldef, coldef, "Current word: "+crntwrd, false)
-
-	tbMessage(0, sntY, width, coldef, coldef, snt, true)
+	tbMessage(0, 3, coldef, coldef, ("Event: " + keyevent))
+	tbMessage(0, 4, coldef, coldef, fmt.Sprintf("Word Bank: %s", wrds))
+	tbMessage(0, 5, coldef, coldef, "Current word: "+crntwrd)
 }
