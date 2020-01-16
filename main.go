@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/nsf/termbox-go"
+	tbutil "github.com/JosephZoeller/project-0/termboxutil"
 )
 
 func main() {
@@ -14,7 +15,7 @@ func main() {
 	termbox.SetInputMode(termbox.InputEsc)
 
 	// test briefing
-	showPreface()
+	showPreface(*user)
 	
 	// test
 	uwrds, pgwrds, t := runTypeTest(duration, freestyle)
@@ -25,5 +26,5 @@ func main() {
 	if (len(prgmWords) > 0) {
 		tbprintAccur(er, len(uwrds))
 	}
-	keyContinue(true)
+	tbutil.KeyContinue(true)
 }

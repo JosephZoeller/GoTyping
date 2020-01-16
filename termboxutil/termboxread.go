@@ -1,62 +1,17 @@
-package main
+package termboxutil
 
 import (
-	"fmt"
-	"strconv"
-	"time"
-
 	"github.com/JosephZoeller/project-0/timer"
 
 	"github.com/nsf/termbox-go"
 )
 
-const COLDEF termbox.Attribute = termbox.ColorDefault
+var snt string = ""
+var wordHistory []string
+var crntwrd = ""
+var keyevent = ""
 
-func tbMessage(xStart int, yStart int, foreColor termbox.Attribute, backColor termbox.Attribute, message string) (int, int) {
-	x := xStart
-	y := yStart
-	stdWidth, _ := termbox.Size()
-
-	for _, ch := range message {
-		termbox.SetCell(x, y, ch, foreColor, backColor)
-		if x > stdWidth && ch == ' ' {
-			y++
-			x = xStart
-		} else {
-			x++
-		}
-	}
-
-	for j := x; j < stdWidth; j++ {
-		termbox.SetCell(j, y, ' ', foreColor, backColor)
-	}
-
-	termbox.Flush()
-	return x, y
-}
-
-func showPreface() {
-	termbox.Clear(COLDEF, COLDEF)
-	cd := 3
-	pre := "Welcome to my typing speed test, " + *user +
-		". This program will count down from " + strconv.Itoa(cd) +
-		", and then it will measure how fast you can type words." +
-		"\n" + "When you're ready, press any key to begin..."
-
-	tbMessage(0, 0, termbox.ColorBlue, COLDEF, pre)
-	keyContinue(false)
-}
-
-func tbCountDown(x, y, cd int, frmt string) {
-	for cd > 0 {
-		tbMessage(x, y, COLDEF, COLDEF, fmt.Sprintf(frmt, strconv.Itoa(cd)))
-		time.Sleep(time.Second)
-		cd--
-	}
-	tbMessage(x, y, COLDEF, COLDEF, fmt.Sprintf(frmt, "0"))
-}
-
-func keyContinue(reqEnter bool) rune {
+func KeyContinue(reqEnter bool) rune {
 
 	for {
 		ev := termbox.PollEvent()
@@ -69,12 +24,7 @@ func keyContinue(reqEnter bool) rune {
 	}
 }
 
-var snt string = ""
-var wordHistory []string
-var crntwrd = ""
-var keyevent = ""
-
-func readln(sdur int) []string {
+func Readln(sdur int) []string {
 	t := 0.00
 	wordHistory = make([]string, 0)
 mainLoop: // logic heavily inspired by editbox.go from the termbox-go _demos
@@ -160,13 +110,4 @@ func backspace() {
 		crntwrd = crntwrd[:len(crntwrd)-1]
 	}
 	snt = snt[:lensnt-1]
-}
-
-func redraw() {
-	sntX, sntY := tbMessage(0, 1, COLDEF, COLDEF, snt)
-	termbox.SetCursor(sntX, sntY)
-
-	tbMessage(0, 3, COLDEF, COLDEF, ("Event: " + keyevent))
-	tbMessage(0, 4, COLDEF, COLDEF, fmt.Sprintf("Word Bank: %s", wordHistory))
-	tbMessage(0, 5, COLDEF, COLDEF, "Current word: "+crntwrd)
 }
