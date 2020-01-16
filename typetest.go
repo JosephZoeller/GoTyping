@@ -24,7 +24,7 @@ var sentences []string
 func init() {
 	user = flag.String("user", strings.Title(os.Getenv("USER")), "Defaults to the Operating System's current username.")
 	freestyle = flag.Bool("free", false, "The user has no writing prompt and can type whatever they please.")
-	duration = flag.String("dur", "0:15", "The length of time that the typing test will last. Format as <Minutes>:<Seconds>")
+	duration = flag.String("dur", "0:30", "The length of time that the typing test will last. Format as <Minutes>:<Seconds>")
 	flag.Parse()
 
 	f, _ := os.Open(SENTENCEFILE)
@@ -36,87 +36,86 @@ func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
-func runSentenceTest() {
-	tbCountDown(3, 0, 0, "%s")
-	cd, _ := timer.ParseCountDown(*duration)
+var userWords, prgmWords []string
+
+func loopTestInput(dur int, free bool) float64 {
+	tbCountDown(0, 0, 3, "%s")
+	timer.ResetStopWatch()
+	tbMessage(0, 0, COLDEF, COLDEF, "Start typing!")
 	timer.BeginStopWatch()
-	tbMessage(0, 0, coldef, coldef, "Start typing!")
-	var rnd int
-	var refsnt string
-	var rfwrds, usrwrds, ttlwrds []string
-	var cw, lw, incorrect int
-	var ttlcw, ttllw int
-	go tbCountDown(cd, 50, 0, "Time Remaining: %s Seconds...")
+	go tbCountDown(50, 0, dur, "Time Remaining: %s Seconds...")
 	var t float64
 	for {
 		t, _ = timer.CheckStopWatch()
-		if t >= float64(cd) {
+		if t >= float64(dur) { // todo try to remove cast
 			break
 		}
-		rnd = rand.Intn(len(sentences)) // loop
-		refsnt = sentences[rnd]
-		rfwrds = strings.Split(refsnt, " ")
-		tbMessage(0, 2, coldef, coldef, refsnt) // show reference sentence
-		cw, lw, usrwrds = readLoopSentence(cd)  // compare sentences
-		ttlcw += cw
-		ttllw += lw
-		ttlwrds = append(ttlwrds, rfwrds...)
+		func() {
+			if !free {
+				rndmSnt := sentences[rand.Intn(len(sentences))]
+				tbMessage(0, 2, COLDEF, COLDEF, rndmSnt)
+				prgmWords = append(prgmWords, strings.Split(rndmSnt, " ")...)
+			}
+			userWords = append(userWords, readln(dur)...)
+			tbMessage(0, 7, termbox.ColorRed, COLDEF, fmt.Sprint(userWords))
+		}()
 	}
-
-	incorrect = compare(ttlwrds, usrwrds)
 	timer.PauseStopWatch()
-	t, _ = timer.CheckStopWatch()
-	tbprintStats(ttlcw, ttllw, t) // check acccuracy
-	tbprintAccur(incorrect, len(ttlwrds))
-	keyContinue(true)
+	return t
 }
 
-func compare(src, usr []string) int {
-	wrong := 0 // src has the full sentence, but the user might not have typed the entire sentence  before the time was up
+func resetTypeTest() {
+	userWords = make([]string, 0)
+	prgmWords = make([]string, 0)
+}
+
+func runTypeTest(dur *string, free *bool) ([]string, []string, float64) {
+	cd, _ := timer.ParseCountDown(*dur)
+	resetTypeTest()
+	t := loopTestInput(cd, *free)
+	return userWords, prgmWords, t
+}
+
+func getDiscrepancyCount(userWords, prgmWords []string) int {
+	wrong := 0
 
 	// maybe upon finding one wrong, check the usr[i + 1], and then for the next word check [i - 1] to see if they got back on track
-	for i, sr := range src {
-		if i < len(usr) && sr != usr[i] {
+	for i, prgmWord := range prgmWords {
+		if i < len(userWords) && prgmWord != userWords[i] {
 			wrong++
 		}
 	}
 	return wrong
 }
 
-func tbprintAccur(wrng, ttl int) {
-
-	tbMessage(60, 2, termbox.ColorBlue, coldef, fmt.Sprintf("Total words: %d", ttl))
-	tbMessage(60, 3, termbox.ColorBlue, coldef, fmt.Sprintf("Words missed: %d", wrng))
-	tbMessage(60, 4, termbox.ColorBlue, coldef, fmt.Sprintf("Accuracy: %% %.2f", float64(ttl-wrng)/float64(ttl)*100))
+func getByteCount(strslice []string) int {
+	count := 0
+	for _, str := range strslice {
+		count += len(str)
+	}
+	return count
 }
 
-func runTest() {
-	tbCountDown(3, 0, 0, "%s")
-	cd, _ := timer.ParseCountDown(*duration)
-	timer.BeginStopWatch()
-	tbMessage(0, 0, coldef, coldef, "Start typing!")
-	go tbCountDown(cd, 50, 0, "Time Remaining: %s Seconds...")
-	cw, lw := readLoop(cd)
-	timer.PauseStopWatch()
-	t, _ := timer.CheckStopWatch()
-	tbprintStats(cw, lw, t) // get count
-	keyContinue(true)
+func tbprintAccur(wrng, ttl int) {
+	tbMessage(60, 2, termbox.ColorBlue, COLDEF, fmt.Sprintf("Total words: %d", ttl))
+	tbMessage(60, 3, termbox.ColorBlue, COLDEF, fmt.Sprintf("Words missed: %d", wrng))
+	tbMessage(60, 4, termbox.ColorBlue, COLDEF, fmt.Sprintf("Accuracy: %% %.2f", float64(ttl-wrng)/float64(ttl)*100))
 }
 
 func tbprintStats(c, l int, t float64) {
 	cfl := float64(c)
 	lfl := float64(l)
-	termbox.Clear(coldef, coldef)
+	termbox.Clear(COLDEF, COLDEF)
 	termbox.HideCursor()
-	tbMessage(0, 0, termbox.ColorBlue, coldef, fmt.Sprintf("Seconds to complete: %.2f", t))
+	tbMessage(0, 0, termbox.ColorBlue, COLDEF, fmt.Sprintf("Seconds to complete: %.2f", t))
 
-	tbMessage(0, 2, termbox.ColorBlue, coldef, fmt.Sprintf("Words written: %d", c))
-	tbMessage(0, 3, termbox.ColorBlue, coldef, fmt.Sprintf("Words per second: %.2f", cfl/t))
-	tbMessage(0, 4, termbox.ColorBlue, coldef, fmt.Sprintf("Words per minute: %.2f", cfl/t*60))
+	tbMessage(0, 2, termbox.ColorBlue, COLDEF, fmt.Sprintf("Words written: %d", c))
+	tbMessage(0, 3, termbox.ColorBlue, COLDEF, fmt.Sprintf("Words per second: %.2f", cfl/t))
+	tbMessage(0, 4, termbox.ColorBlue, COLDEF, fmt.Sprintf("Words per minute: %.2f", cfl/t*60))
 
-	tbMessage(27, 2, termbox.ColorBlue, coldef, fmt.Sprintf("Characters written: %d", l))
-	tbMessage(27, 3, termbox.ColorBlue, coldef, fmt.Sprintf("Characters per second: %.2f", lfl/t))
-	tbMessage(27, 4, termbox.ColorBlue, coldef, fmt.Sprintf("Characters per minute: %.2f", lfl/t*60))
+	tbMessage(27, 2, termbox.ColorBlue, COLDEF, fmt.Sprintf("Characters written: %d", l))
+	tbMessage(27, 3, termbox.ColorBlue, COLDEF, fmt.Sprintf("Characters per second: %.2f", lfl/t))
+	tbMessage(27, 4, termbox.ColorBlue, COLDEF, fmt.Sprintf("Characters per minute: %.2f", lfl/t*60))
 
-	tbMessage(0, 6, coldef, coldef, "Press the enter key to end the program...")
+	tbMessage(0, 6, COLDEF, COLDEF, "Press the enter key to end the program...")
 }
