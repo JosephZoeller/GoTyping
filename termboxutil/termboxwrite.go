@@ -37,10 +37,10 @@ func Write(xStart int, yStart int, foreColor tb.Attribute, backColor tb.Attribut
 func redraw() {
 	sntX, sntY := Write(0, 3, COLDEF, COLDEF, snt)
 	tb.SetCursor(sntX, sntY)
-	tb.Flush() // seems necessary, otherwise SetCursor is slow on the uptake
+	tb.Flush() // otherwise SetCursor will need to wait for the next redraw to move which is nauseating
 }
 
-func drawRTStats() {
+func drawRTStats() { // Assumes timer 
 	Write(0, 5, tb.ColorGreen, COLDEF, ("Event: " + keyevent))
 	t, _ := timer.CheckStopWatch()
 	Write(50, 5, tb.ColorGreen, COLDEF, fmt.Sprintf("Average Speed: %.2f WPM", float64(totalWords)/t*60))
@@ -48,16 +48,21 @@ func drawRTStats() {
 	Write(0, 7, tb.ColorGreen, COLDEF, "Current word: "+crntwrd)
 }
 
-func CountDown(x, y, cd int, frmt string) {
+func CountDown(x, y, cd int, frmt string, ch chan bool) {
 	log.Printf("[termboxutil]: Countdown initiated: Coordinates (%d,%d), %d Seconds", x, y, cd)
 	col := COLDEF
 	for cd > 0 {
-		if cd <= 10 {
-			col = tb.ColorRed
+		select {
+		case <- ch:
+			return
+		default:
+			if cd <= 10 {
+				col = tb.ColorRed
+			}
+			Write(x, y, col, COLDEF, fmt.Sprintf(frmt, strconv.Itoa(cd)))
+			time.Sleep(time.Second)
+			cd--
 		}
-		Write(x, y, col, COLDEF, fmt.Sprintf(frmt, strconv.Itoa(cd)))
-		time.Sleep(time.Second)
-		cd--
 	}
 	Write(x, y, col, COLDEF, fmt.Sprintf(frmt, "0"))
 	log.Printf("[termboxutil]: Countdown completed: Coordinates (%d,%d)", x, y)

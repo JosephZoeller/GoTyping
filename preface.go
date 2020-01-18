@@ -18,5 +18,5 @@ func showPreface(username string) {
 	tbutil.Write(0, 0, tb.ColorBlue, tbutil.COLDEF, pre)
 	tbutil.KeyContinue(false)
 
-	tbutil.CountDown(0, 0, 3, "%s")
+	tbutil.CountDown(0, 0, 3, "%s", nil)
 }

@@ -14,6 +14,7 @@ var duration *string
 
 const SENTENCEFILE string = "sentences.txt"
 const LOGFILE string = "log.txt"
+
 var sentences []string
 
 func init() {

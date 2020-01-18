@@ -1,6 +1,7 @@
 package termboxutil
 
 import (
+	"errors"
 	"github.com/JosephZoeller/project-0/timer"
 	"log"
 
@@ -27,9 +28,10 @@ func KeyContinue(reqEnter bool) rune {
 	}
 }
 
-func Readln(sdur int, verb bool) []string {
+func Readln(sdur int, verb bool) ([]string, error) {
 	log.Printf("[termboxutil]: Reading user input")
 	t := 0.00
+	var err error
 	wordHistory = make([]string, 0)
 mainLoop: // logic heavily inspired by editbox.go from the termbox-go _demos
 	for {
@@ -40,7 +42,9 @@ mainLoop: // logic heavily inspired by editbox.go from the termbox-go _demos
 			switch evt.Type {
 			case termbox.EventKey:
 				switch evt.Key {
-				case termbox.KeyEsc: // TODO cause it to skip to end
+				case termbox.KeyEsc:
+					log.Printf("[termboxutil]: Exit: Encountered termbox.KeyEsc during Readln loop.")
+					err = errors.New("termbox.KeyEsc Event during Readln loop.")
 					break mainLoop
 				case termbox.KeyEnter:
 					newLine()
@@ -58,7 +62,8 @@ mainLoop: // logic heavily inspired by editbox.go from the termbox-go _demos
 					keyevent = "[AddRune]"
 				}
 			case termbox.EventError:
-				// expand
+				log.Printf("[termboxutil]: Error: Encountered termbox.EventError during Readln loop.")
+				err = errors.New("termbox.EventError during Readln loop.")
 				break mainLoop
 			}
 			redraw()
@@ -73,7 +78,7 @@ mainLoop: // logic heavily inspired by editbox.go from the termbox-go _demos
 		}
 	}
 	log.Printf("[termboxutil]: Read loop ended:\n\ttime: %.2f\n\twordHistory: %s\n\ttotalWords: %d", t, wordHistory, totalWords)
-	return wordHistory
+	return wordHistory, err
 }
 
 func addRune(r rune) {
