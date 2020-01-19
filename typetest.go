@@ -12,19 +12,26 @@ import (
 var userWords, prgmWords []string
 
 func resetTypeTest() {
+	log.Println("[typetest]: Resetting Stopwatch")
+	_, running := timer.CheckStopWatch()
+	if running {
+		timer.PauseStopWatch()
+	}
+	timer.ResetStopWatch()
 	log.Println("[typetest]: Resetting global slices")
 	userWords = make([]string, 0)
 	prgmWords = make([]string, 0)
 }
 
 func loopTestInput(dur int, free, verb bool) float64 {
-	timer.ResetStopWatch()
 	tbutil.Write(0, 0, tbutil.COLDEF, tbutil.COLDEF, "Start typing!")
-	timer.BeginStopWatch()
 	log.Println("[typetest]: Test started...")
-	cdQuit := make(chan bool, 3)
+	// buffer required in the event that the user presses the escape key or an error occurs after the display timer is up, but the test hasn't been completed
+	cdQuit := make(chan bool, 2)
 	defer close(cdQuit)
+
 	go tbutil.CountDown(50, 0, dur, "Time Remaining: %s Seconds...", cdQuit)
+
 	var t float64
 	var er error
 	for {
@@ -49,14 +56,22 @@ func loopTestInput(dur int, free, verb bool) float64 {
 			break
 		}
 	}
-	timer.PauseStopWatch()
 	log.Println("[typetest]: Test ended.")
 	return t
 }
 
-func runTypeTest(dur int, free, verb *bool) ([]string, []string, float64) {
+//RunTypeTest initiates the typing test for the user, 
+// accepting an int for the test duration in seconds,
+// a bool for freestyle testing (testing without a writing prompt),
+// and a bool for displaying verbose, real-time analytics during the test.
+// Returns the user's typed words, the computer's writing prompts and the time spent on the test.
+func RunTypeTest(dur int, free, verb *bool) ([]string, []string, float64) {
 	resetTypeTest()
+
+	timer.BeginStopWatch()
 	t := loopTestInput(dur, *free, *verb)
+	timer.PauseStopWatch()
+
 	log.Printf("[typetest]: Elapsed test time: %.2f", t)
 	if !*free {
 		log.Printf("[typetest]: Computer Generated text: \t%s", prgmWords)

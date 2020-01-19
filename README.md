@@ -4,9 +4,9 @@ This interactive CLI Program allows the user to test their typing skills using [
 # TODO
 ## Features
 - [ ] Documentation
-- [ ] Unit testing
+- [x] Unit testing
 - [ ] Benchmarking
-- [ ] Logging
+- [x] Logging
 - [X] API Library (Stopwatch, countdown)
 - [x] CLI flags (Timer, freestyle/sentence reference)
 - [x] Environment variables (user)

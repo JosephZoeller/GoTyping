@@ -1,38 +1,48 @@
 package termboxutil
 
 import (
-	"errors"
 	"fmt"
 	"github.com/nsf/termbox-go"
 	"testing"
 )
 
 func TestWrite(t *testing.T) {
-	str := "F"
+	str := "F "
 	for i := 0; i < 100; i++ {
-		str += "F"
+		str += "F "
 		x, y := Write(0, 0, termbox.ColorDefault, termbox.ColorDefault, str)
 		if x < 0 {
-			t.Fatal(errors.New("x is less than 0"))
+			t.Errorf("x is less than 0")
 		} else if y < 0 {
-			t.Fatal(errors.New("y is less than 0"))
+			t.Errorf("y is less than 0")
 		}
 	}
 }
 
 func ExampleWrite() {
-	str := "Example String"
-	x, y := Write(0,0, termbox.ColorDefault, termbox.ColorDefault, str)
-	fmt.Printf("x: %d, y: %d", x, y)
-	//Output: x: 6, y: 1
+	str := "1234 123 12345"
+	width, _ := termbox.Size()                                           // In the absence of a terminal, returns 0, 0
+	x, y := Write(0, 0, termbox.ColorDefault, termbox.ColorDefault, str) // If Terminal is 0, prints 1 word per line
+	fmt.Printf("Terminal Width: %d. x: %d, y: %d", width, x, y)
+	//Output: Terminal Width: 0. x: 5, y: 2
 }
 
 func TestCountDown(t *testing.T) {
-	ch := make(chan bool)
+	ch := make(chan bool, 2)
 	defer close(ch)
-	CountDown(0, 0, 5, "Counting down from %d...", ch)
-	go CountDown(0, 0, 5, "Counting down from %d...", ch)
+	e := CountDown(0, 0, -1, "Counting down from %d", ch)
+	if e == nil {
+		t.Errorf("CountDown accepted negative input")
+	}
+	e = CountDown(0, 0, 5, "Counting down from %d...", ch)
+	if e != nil {
+		t.Errorf("CountDown rejected a valid input")
+	}
 	ch <- true
+	e = CountDown(0, 0, 5, "Counting down from %d...", ch)
+	if e == nil {
+		t.Errorf("CountDown was not aborted")
+	}
 }
 
 func ExampleCountDown() {
@@ -40,8 +50,8 @@ func ExampleCountDown() {
 	ch := make(chan bool)
 	defer close(ch)
 	CountDown(0, 0, 5, "Counting down from %d...", ch)
-	// 5, 4, 3, 2, 1, 0
+	// Output: 5, 4, 3, 2, 1, 0
 	go CountDown(0, 0, 5, "Counting down from %d...", ch)
 	ch <- true
-	// Returns immediately
+	// Aborts CountDown
 }

@@ -12,12 +12,12 @@ import (
 )
 
 func main() {
-	log.Println("[main]: Program Start...")
 	file, logcrerr := os.Create(LOGFILE)
 	if logcrerr != nil {
 		log.Fatal(logcrerr.Error())
 	}
 	log.SetOutput(file)
+	log.Println("[main]: Program Start...")
 	defer file.Close()
 
 	err := termbox.Init()
@@ -49,14 +49,14 @@ func main() {
 	showPreface(*user)
 
 	// test
-	log.Printf("[main]: Beginning test... [User: %s, Duration: %d, Freestyle: %t, Verbose: %t, Cheat: %t]", *user, dur, *freestyle, *verbose, *cheat)
-	uwrds, pgwrds, t := runTypeTest(dur, freestyle, verbose)
+	log.Printf("[main]: Beginning test... [User: %s, Duration: %d, Freestyle: %t, Verbose: %t, Cheat: %t]", *user, dur, *freestyle, *debug, *cheat)
+	uwrds, pgwrds, t := RunTypeTest(dur, freestyle, debug)
 	log.Printf("[main]: Test Complete...")
 	er := getDiscrepancyCount(uwrds, pgwrds)
 
 	// test debriefing
 	log.Println("[main]: Displaying speed statistics...")
-	tbprintStats(len(uwrds), getByteCount(uwrds), t, cheat)
+	tbprintStats(uwrds, t, cheat)
 	if len(prgmWords) > 0 {
 		log.Println("[main]: Displaying accuracy statistics...")
 		tbprintAccur(er, len(uwrds), cheat)
