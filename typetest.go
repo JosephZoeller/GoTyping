@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"errors"
 	"math/rand"
 	"strings"
 
@@ -34,6 +35,7 @@ func loopTestInput(dur int, free, verb bool) float64 {
 
 	var t float64
 	var er error
+	var rndmSnt string
 	for {
 		t, _ = timer.CheckStopWatch()
 		if t >= float64(dur) { // todo try to remove cast
@@ -41,7 +43,7 @@ func loopTestInput(dur int, free, verb bool) float64 {
 		}
 		func() {
 			if !free {
-				rndmSnt := sentences[rand.Intn(len(sentences))]
+				rndmSnt, _ = getRandomSentencePsuedo(rndmSnt)
 				tbutil.Write(0, 2, tbutil.COLDEF, tbutil.COLDEF, rndmSnt)
 				prgmWords = append(prgmWords, strings.Split(rndmSnt, " ")...)
 			}
@@ -58,6 +60,18 @@ func loopTestInput(dur int, free, verb bool) float64 {
 	}
 	log.Println("[typetest]: Test ended.")
 	return t
+}
+
+func getRandomSentencePsuedo (lastsnt string) (string, error) {
+	if len(sentences) > 1 {
+		for {
+			rndmSnt := sentences[rand.Intn(len(sentences))]
+			if (rndmSnt != lastsnt) {
+				return rndmSnt, nil
+			}
+		}
+	}
+	return "", errors.New("Insufficient number of writing prompts to choose from (minimum 2).")
 }
 
 //RunTypeTest initiates the typing test for the user, 

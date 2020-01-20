@@ -3,11 +3,11 @@ package termboxutil
 import (
 	"errors"
 	"fmt"
-	"github.com/JosephZoeller/project-0/timer"
-	tb "github.com/nsf/termbox-go"
 	"log"
 	"strconv"
 	"time"
+
+	tb "github.com/nsf/termbox-go"
 )
 
 const COLDEF tb.Attribute = tb.ColorDefault
@@ -16,6 +16,9 @@ func Write(xStart int, yStart int, foreColor tb.Attribute, backColor tb.Attribut
 	x := xStart
 	y := yStart
 	stdWidth, _ := tb.Size()
+	if stdWidth >= 10 {
+		stdWidth -= 10
+	}
 
 	for _, ch := range message {
 		tb.SetCell(x, y, ch, foreColor, backColor)
@@ -27,7 +30,7 @@ func Write(xStart int, yStart int, foreColor tb.Attribute, backColor tb.Attribut
 		}
 	}
 
-	for j := x; j < stdWidth; j++ {
+	for j := x; j < stdWidth+10; j++ {
 		tb.SetCell(j, y, ' ', foreColor, backColor)
 	}
 
@@ -49,10 +52,10 @@ func redraw(verb bool, keyEvent string) {
 	tb.Flush() // otherwise SetCursor will need to wait for the next redraw to move which is nauseating
 }
 
-func drawRTStats(keyEvent string) { // Assumes timer
+func drawRTStats(keyEvent string) {
 	Write(0, 5, tb.ColorGreen, COLDEF, ("Event: " + keyEvent))
-	t, _ := timer.CheckStopWatch()
-	Write(50, 5, tb.ColorGreen, COLDEF, fmt.Sprintf("Average Speed: %.2f WPM", float64(len(wordHistory))/t*60))
+	//t, _ := timer.CheckStopWatch()
+	//Write(50, 5, tb.ColorGreen, COLDEF, fmt.Sprintf("Average Speed: %.2f WPM", float64(len(wordHistory))/t*60)) // Inaccurate after the first readLn loop since wordHistory is reset, but timer is not.
 	Write(0, 6, tb.ColorGreen, COLDEF, fmt.Sprintf("Word Bank: %s", wordHistory))
 	Write(0, 7, tb.ColorGreen, COLDEF, "Current word: "+crntwrd)
 }

@@ -9,8 +9,6 @@ import (
 
 func getDiscrepancyCount(userWords, prgmWords []string) int {
 	wrong := 0
-
-	// maybe upon finding one wrong, check the usr[i + 1], and then for the next word check [i - 1] to see if they got back on track
 	for i, prgmWord := range prgmWords {
 		if i < len(userWords) && prgmWord != userWords[i] {
 			wrong++

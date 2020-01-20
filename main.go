@@ -37,6 +37,12 @@ func main() {
 			sentences = append(sentences, sc.Text())
 		}
 	}
+	
+	_, senfilerr = getRandomSentencePsuedo("")
+	if (senfilerr != nil) {
+		log.Fatalln(senfilerr)
+	}
+
 	dur, durerr := ParseCountDown(*duration)
 	if durerr != nil {
 		log.Printf("[main]: An error occurred while parsing the custom duration \"%s\". Defaulting to 0:30.", *duration)
@@ -46,7 +52,7 @@ func main() {
 
 	// test briefing
 	log.Println("[main]: Displaying preface...")
-	showPreface(*user)
+	showPreface(*user, *freestyle)
 
 	// test
 	log.Printf("[main]: Beginning test... [User: %s, Duration: %d, Freestyle: %t, Verbose: %t, Cheat: %t]", *user, dur, *freestyle, *debug, *cheat)
