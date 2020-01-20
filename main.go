@@ -37,7 +37,7 @@ func main() {
 			sentences = append(sentences, sc.Text())
 		}
 	}
-	
+
 	_, senfilerr = getRandomSentencePsuedo("")
 	if (senfilerr != nil) {
 		log.Fatalln(senfilerr)
@@ -56,16 +56,15 @@ func main() {
 
 	// test
 	log.Printf("[main]: Beginning test... [User: %s, Duration: %d, Freestyle: %t, Verbose: %t, Cheat: %t]", *user, dur, *freestyle, *debug, *cheat)
-	uwrds, pgwrds, t := RunTypeTest(dur, freestyle, debug)
+	uwrds, wrngCnt, t := RunTypeTest(dur, freestyle, debug)
 	log.Printf("[main]: Test Complete...")
-	er := getDiscrepancyCount(uwrds, pgwrds)
 
 	// test debriefing
 	log.Println("[main]: Displaying speed statistics...")
 	tbprintStats(uwrds, t, cheat)
-	if len(prgmWords) > 0 {
+	if !*freestyle {
 		log.Println("[main]: Displaying accuracy statistics...")
-		tbprintAccur(er, len(uwrds), cheat)
+		tbprintAccur(wrngCnt, len(uwrds), t, cheat)
 	}
 	tbutil.KeyContinue(true)
 	log.Println("[main]: Exiting Program...")

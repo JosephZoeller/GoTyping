@@ -50,3 +50,12 @@ func ResetStopWatch() {
 	totalTime = 0
 	log.Println("[stopwatch]: Timer Reset")
 }
+
+// PrimeStopWatch stops and then resets the stopwatch.
+func PrimeStopWatch() {
+	_, running := CheckStopWatch()
+	if running {
+		PauseStopWatch()
+	}
+	ResetStopWatch()
+}

@@ -9,6 +9,8 @@ import (
 
 func getDiscrepancyCount(userWords, prgmWords []string) int {
 	wrong := 0
+
+	// maybe upon finding one wrong, check the usr[i + 1], and then for the next word check [i - 1] to see if they got back on track
 	for i, prgmWord := range prgmWords {
 		if i < len(userWords) && prgmWord != userWords[i] {
 			wrong++
@@ -26,17 +28,20 @@ func getByteCount(strslice []string) int {
 	log.Printf("[analysis]: Measuring byte count:\n\tString: %s\n\tByte count: %d", strslice, count)
 	return count
 }
-func tbprintAccur(wrng, ttl int, cheat *bool) {
+func tbprintAccur(wrng, ttl int, t float64, cheat *bool) {
 	if *cheat {
 		wrng /= 3
+		t /= 3
 		log.Printf("[analysis]: Cheat mode enabled: Displaying %d (# wrong answers / 3)", wrng)
 	}
-	tbutil.Write(60, 2, tb.ColorBlue, tbutil.COLDEF, fmt.Sprintf("Total words: %d", ttl))
-	log.Printf("[analysis]: Total words: %d", ttl)
-	tbutil.Write(60, 3, tb.ColorBlue, tbutil.COLDEF, fmt.Sprintf("Words missed: %d", wrng))
+	crrctFL := float64(ttl - wrng)
+	ttlFl := float64(ttl)
+	tbutil.Write(60, 2, tb.ColorBlue, tbutil.COLDEF, fmt.Sprintf("Words missed: %d", wrng))
 	log.Printf("[analysis]: Words missed: %d", wrng)
-	tbutil.Write(60, 4, tb.ColorBlue, tbutil.COLDEF, fmt.Sprintf("Accuracy: %% %.2f", float64(ttl-wrng)/float64(ttl)*100))
-	log.Printf("[analysis]: Accuracy: %% %.2f", float64(ttl-wrng)/float64(ttl)*100)
+	tbutil.Write(60, 3, tb.ColorBlue, tbutil.COLDEF, fmt.Sprintf("Accuracy: %% %.2f", crrctFL/ttlFl*100))
+	log.Printf("[analysis]: Accuracy: %% %.2f", crrctFL/ttlFl*100)
+	tbutil.Write(60, 4, tb.ColorBlue, tbutil.COLDEF, fmt.Sprintf("Adjusted words per minute: %.2f", crrctFL/t*60))
+	log.Printf("[analysis]: Adjusted words per minute: %.2f", crrctFL/t*60)
 }
 
 func tbprintStats(wrds []string, t float64, cheat *bool) {
@@ -50,7 +55,7 @@ func tbprintStats(wrds []string, t float64, cheat *bool) {
 	tbutil.Write(0, 0, tb.ColorBlue, tbutil.COLDEF, fmt.Sprintf("Seconds to complete: %.2f", t))
 
 	if *cheat {
-		t = t / 3
+		t /= 3
 		log.Printf("[analysis]: Cheat mode enabled: Calculating for time %.2f (test duration / 3)", t)
 	}
 
