@@ -52,6 +52,9 @@ func loopTestInput(dur int, free, verb bool, sentences []string) ([]string, int)
 	return userWords, wrngCnt
 }
 
+// getRandomSentencePsuedo ensures that the user won't get the same writing prompt twice in a row.
+// It's still possible to get a writing prompt more than once, but at least this way it will be less confusing.
+// Getting a writing prompt more than once will statistically decrease as the sentences.txt grows, so it's not a priority.
 func getRandomSentencePsuedo(lastsnt string, sentences []string) (string, error) {
 	if len(sentences) > 1 {
 		for {
