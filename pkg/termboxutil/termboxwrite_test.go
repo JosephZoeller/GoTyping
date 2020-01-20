@@ -6,16 +6,21 @@ import (
 	"testing"
 )
 
-func TestWrite(t *testing.T) {
+func BenchmarkWrite(b *testing.B) {
 	str := "F "
-	for i := 0; i < 100; i++ {
+	for i := 0; i < b.N; i++ {
 		str += "F "
-		x, y := Write(0, 0, termbox.ColorDefault, termbox.ColorDefault, str)
-		if x < 0 {
-			t.Errorf("x is less than 0")
-		} else if y < 0 {
-			t.Errorf("y is less than 0")
-		}
+		Write(0, 0, termbox.ColorDefault, termbox.ColorDefault, str)
+	}
+}
+
+func TestWrite(t *testing.T) {
+	str := "This is a test."
+	x, y := Write(0, 0, termbox.ColorDefault, termbox.ColorDefault, str)
+	if x != 5 {
+		t.Errorf("X value is off by %d", 5 - x)
+	} else if y != 3 {
+		t.Errorf("Y value is off by %d", 3 - y)
 	}
 }
 
@@ -53,5 +58,5 @@ func ExampleCountDown() {
 	// Output: 5, 4, 3, 2, 1, 0
 	go CountDown(0, 0, 5, "Counting down from %d...", ch)
 	ch <- true
-	// Aborts CountDown
+	// Immediately Aborts CountDown
 }

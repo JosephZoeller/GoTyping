@@ -1,8 +1,8 @@
-package main
+package phase
 
 import (
 	"fmt"
-	tbutil "github.com/JosephZoeller/project-0/termboxutil"
+	tbutil "github.com/JosephZoeller/project-0/pkg/termboxutil"
 	tb "github.com/nsf/termbox-go"
 	"log"
 )
@@ -28,7 +28,11 @@ func getByteCount(strslice []string) int {
 	log.Printf("[analysis]: Measuring byte count:\n\tString: %s\n\tByte count: %d", strslice, count)
 	return count
 }
-func tbprintAccur(wrng, ttl int, t float64, cheat *bool) {
+// TbprintAccur displays and logs accuracy calculations, based on the data accrued during the test.
+// Accepts ints for the user's total words typed and those that they mistyped,
+// as well as a float64 representing the test's elapsed time in seconds
+// and the cheat boolean, which thirds the errors accrued and time elapsed.
+func TbprintAccur(ttl, wrng int, t float64, cheat *bool) {
 	if *cheat {
 		wrng /= 3
 		t /= 3
@@ -44,7 +48,10 @@ func tbprintAccur(wrng, ttl int, t float64, cheat *bool) {
 	log.Printf("[analysis]: Adjusted words per minute: %.2f", crrctFL/t*60)
 }
 
-func tbprintStats(wrds []string, t float64, cheat *bool) {
+// TbprintStats displays and logs general calculations, based on the data accrued during the test.
+// Accepts a slice of words typed by the user, as well as a float64 representing the test's elapsed time in seconds
+// and the cheat boolean, which thirds the time elapsed.
+func TbprintStats(wrds []string, t float64, cheat *bool) {
 	wordLen := len(wrds)
 	wordLenFl := float64(wordLen)
 	charLen := getByteCount(wrds)

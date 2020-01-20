@@ -2,7 +2,7 @@ package termboxutil
 
 import (
 	"errors"
-	"github.com/JosephZoeller/project-0/timer"
+	"github.com/JosephZoeller/project-0/pkg/timer"
 	"log"
 
 	"github.com/nsf/termbox-go"

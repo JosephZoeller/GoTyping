@@ -1,4 +1,4 @@
-package main
+package phase
 
 import (
 	"errors"
@@ -6,11 +6,11 @@ import (
 	"math/rand"
 	"strings"
 
-	tbutil "github.com/JosephZoeller/project-0/termboxutil"
-	"github.com/JosephZoeller/project-0/timer"
+	tbutil "github.com/JosephZoeller/project-0/pkg/termboxutil"
+	"github.com/JosephZoeller/project-0/pkg/timer"
 )
 
-func loopTestInput(dur int, free, verb bool) ([]string, int) {
+func loopTestInput(dur int, free, verb bool, sentences []string) ([]string, int) {
 	tbutil.Write(0, 0, tbutil.COLDEF, tbutil.COLDEF, "Start typing!")
 	log.Println("[typetest]: Test started...")
 	cdQuit := make(chan bool, 2) // buffer required in the event that the user presses the escape key or an error occurs after the display timer is up, but the test hasn't been completed
@@ -32,7 +32,7 @@ func loopTestInput(dur int, free, verb bool) ([]string, int) {
 
 		func() {
 			if !free {
-				rndmSnt, _ = getRandomSentencePsuedo(rndmSnt)
+				rndmSnt, _ = getRandomSentencePsuedo(rndmSnt, sentences)
 				tbutil.Write(0, 2, tbutil.COLDEF, tbutil.COLDEF, rndmSnt)
 				log.Printf("[typetest]: Computer Generated text: \t%s", rndmSnt)
 			}
@@ -52,7 +52,7 @@ func loopTestInput(dur int, free, verb bool) ([]string, int) {
 	return userWords, wrngCnt
 }
 
-func getRandomSentencePsuedo(lastsnt string) (string, error) {
+func getRandomSentencePsuedo(lastsnt string, sentences []string) (string, error) {
 	if len(sentences) > 1 {
 		for {
 			rndmSnt := sentences[rand.Intn(len(sentences))]
@@ -69,11 +69,11 @@ func getRandomSentencePsuedo(lastsnt string) (string, error) {
 // a bool for freestyle testing (testing without a writing prompt),
 // and a bool for displaying verbose, real-time analytics during the test.
 // Returns the user's typed words, the computer's writing prompts and the time spent on the test.
-func RunTypeTest(dur int, free, verb *bool) ([]string, int, float64) {
+func RunTypeTest(dur int, free, verb *bool, sentences []string) ([]string, int, float64) {
 	timer.PrimeStopWatch()
 
 	timer.BeginStopWatch()
-	userWords, wrngCnt := loopTestInput(dur, *free, *verb)
+	userWords, wrngCnt := loopTestInput(dur, *free, *verb, sentences)
 	timer.PauseStopWatch()
 	t, _ := timer.CheckStopWatch()
 
