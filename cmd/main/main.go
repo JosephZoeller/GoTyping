@@ -4,11 +4,10 @@ import (
 	"bufio"
 	"log"
 	"os"
-	"strconv"
-	"strings"
 
 	"github.com/JosephZoeller/project-0/cmd/phase"
 	tbutil "github.com/JosephZoeller/project-0/pkg/termboxutil"
+	"github.com/JosephZoeller/project-0/pkg/timer"
 	"github.com/nsf/termbox-go"
 )
 
@@ -42,7 +41,7 @@ func main() {
 		}
 	}
 
-	dur, durerr := ParseCountDown(*duration)
+	dur, durerr := timer.ParseCountDown(*duration)
 	if durerr != nil {
 		log.Printf("[main]: An error occurred while parsing the custom duration \"%s\". Defaulting to 0:30.", *duration)
 		tbutil.Write(0, 0, tbutil.COLDEF, tbutil.COLDEF, "Error while parsing duration. Defaulting to 0:30")
@@ -67,22 +66,4 @@ func main() {
 	}
 	tbutil.KeyContinue(true)
 	log.Println("[main]: Exiting Program...")
-}
-
-func ParseCountDown(a string) (int, error) {
-	s := 0
-	aDlm := strings.Split(a, ":")
-	for i, a := range aDlm {
-		t, e := strconv.Atoi(a)
-		if e != nil {
-			return -1, e
-		}
-		switch i {
-		case 0:
-			s += (t * 60)
-		case 1:
-			s += t
-		}
-	}
-	return s, nil
 }
