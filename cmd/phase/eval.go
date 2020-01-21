@@ -1,3 +1,4 @@
+// Package phase project-0 Typing Test for 200106-uta-go
 package phase
 
 import (
@@ -9,8 +10,8 @@ import (
 	tbutil "github.com/JosephZoeller/project-0/pkg/termboxutil"
 	"github.com/JosephZoeller/project-0/pkg/timer"
 )
-// loopTestInput accepts user input for a predetermined amount of time and returns all of the text written as a slice of strings delimited by the ' ' characters.
-// Accepts a second-duration integer, a freestyle mode boolean, and the writing prompt sentences.
+// loopTestInput accepts user input for a predetermined duration and returns all of the text written as a slice of strings delimited by the ' ' characters.
+// Accepts a duration in seconds (integer), a freestyle mode (boolean), and the writing prompt sentences ([]string).
 // If freestyle is set to false, freestyle mode is off. Instead, the user is prompted to copy prewritten sentences (from the sentences.txt) into the terminal.
 // If discrepancies are found between the prewritten sentence and the user-generated sentence, the function will also return the number of discrepancies found.
 // In freestyle mode, prewritten sentences will not be displayed and the discrepancy count will return 0.

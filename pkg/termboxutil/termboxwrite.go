@@ -1,3 +1,4 @@
+// Package termboxutil project-0 Typing Test for 200106-uta-go
 package termboxutil
 
 import (
@@ -12,6 +13,12 @@ import (
 
 const COLDEF tb.Attribute = tb.ColorDefault
 
+// Write displays the input string on the terminal through termbox.
+// Accepts an x, y coordinate, a foreground and background color, and a message to print.
+// returns the coordinates of the end of the message string.
+// Note: Write will draw over previously written text, both on and to the right of the x coordinate.
+// In other words, in order for two or more strings to be displayed on the same line,
+// They must be written in order from left to right,
 func Write(xStart int, yStart int, foreColor tb.Attribute, backColor tb.Attribute, message string) (int, int) {
 	x := xStart
 	y := yStart
@@ -38,6 +45,8 @@ func Write(xStart int, yStart int, foreColor tb.Attribute, backColor tb.Attribut
 	return x, y
 }
 
+// redraw displays the line of text that the user is currently inputting. For each space, added rune or backspace, the input is redrawn on the screen.
+// accepts a boolean to turn on verbose (debug) information regarding the user input, and a string which displays what triggered the redraw.
 func redraw(verb bool, keyEvent string) {
 	var snt string
 	for _, wrd := range wordHistory {
@@ -51,7 +60,8 @@ func redraw(verb bool, keyEvent string) {
 	tb.SetCursor(sntX, sntY)
 	tb.Flush() // otherwise SetCursor will need to wait for the next redraw to move which is nauseating
 }
-
+// drawRTStats draws the real-time stats to the terminal.
+// includes the trigger event, the user's word history and the current word that the user is working on.
 func drawRTStats(keyEvent string) {
 	Write(0, 5, tb.ColorGreen, COLDEF, ("Event: " + keyEvent))
 	//t, _ := timer.CheckStopWatch()
@@ -60,6 +70,9 @@ func drawRTStats(keyEvent string) {
 	Write(0, 7, tb.ColorGreen, COLDEF, "Current word: "+crntwrd)
 }
 
+// CountDown displays a countdown to the terminal, updating every second until it reaches 0.
+// accepts an x,y starting coordinate, a formatted string with which the countdown integer will be displayed as,
+// and an abort channel, which will kill the function when it recieves 'true' from the channel. 
 func CountDown(x, y, cd int, frmt string, abort chan bool) error {
 	if cd < 1 {
 		log.Printf("[termboxutil]: Countdown value must be greater than 0 (input: %d)", cd)

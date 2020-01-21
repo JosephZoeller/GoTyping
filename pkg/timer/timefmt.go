@@ -1,3 +1,4 @@
+// Package timer project-0 Typing Test for 200106-uta-go
 package timer
 
 import (

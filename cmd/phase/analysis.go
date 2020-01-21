@@ -1,3 +1,4 @@
+// Package phase project-0 Typing Test for 200106-uta-go
 package phase
 
 import (
@@ -7,6 +8,10 @@ import (
 	"log"
 )
 
+// getDiscrepancyCount compares the user-generated words against the program-generated words.
+// accepts both user and computer text as []string and returns the number of mismatches found.
+// If, hypothetically, a user skips or adds a word, the strings would be offset by one when comparing the two inputs.
+// This would lead to a cascade of discrepancies, so this function is considered fragile in that regard.
 func getDiscrepancyCount(userWords, prgmWords []string) int {
 	wrong := 0
 
