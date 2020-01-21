@@ -5,7 +5,7 @@ This interactive CLI Program allows the user to test their typing skills using [
 Upon running the application, the user is immediately met with a preface message with instructions for how to take the test. By default, the test will prompt the user with sentences to type, for 30 seconds. Once completed, the program will display statistics about the user's performance.
 
 ### Installation
-Install this go package with `go get -u github.com/JosephZoeller/project-0`
+Install this go package with `go get -u github.com/JosephZoeller/project-0` and termbox-go with `go get -u github.com/nsf/termbox-go`
 
 ## Command-line args
 The typing test accepts numerous arguments:
@@ -33,7 +33,7 @@ The typing test accepts numerous arguments:
 ## Features Roadmap
 - [x] Documentation
 - [x] Unit testing (TODO simulate user input)
-- [ ] Benchmarking
+- [x] Benchmarking
 - [x] Logging
 - [X] API Library (Stopwatch, countdown)
 - [x] CLI flags (Timer, freestyle/sentence reference)

@@ -9,7 +9,11 @@ import (
 	tbutil "github.com/JosephZoeller/project-0/pkg/termboxutil"
 	"github.com/JosephZoeller/project-0/pkg/timer"
 )
-
+// loopTestInput accepts user input for a predetermined amount of time and returns all of the text written as a slice of strings delimited by the ' ' characters.
+// Accepts a second-duration integer, a freestyle mode boolean, and the writing prompt sentences.
+// If freestyle is set to false, freestyle mode is off. Instead, the user is prompted to copy prewritten sentences (from the sentences.txt) into the terminal.
+// If discrepancies are found between the prewritten sentence and the user-generated sentence, the function will also return the number of discrepancies found.
+// In freestyle mode, prewritten sentences will not be displayed and the discrepancy count will return 0.
 func loopTestInput(dur int, free, verb bool, sentences []string) ([]string, int) {
 	tbutil.Write(0, 0, tbutil.COLDEF, tbutil.COLDEF, "Start typing!")
 	log.Println("[typetest]: Test started...")
