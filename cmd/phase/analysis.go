@@ -28,6 +28,7 @@ func getByteCount(strslice []string) int {
 	log.Printf("[analysis]: Measuring byte count:\n\tString: %s\n\tByte count: %d", strslice, count)
 	return count
 }
+
 // TbprintAccur displays and logs accuracy calculations, based on the data accrued during the test.
 // Accepts ints for the user's total words typed and those that they mistyped,
 // as well as a float64 representing the test's elapsed time in seconds
@@ -40,11 +41,11 @@ func TbprintAccur(ttl, wrng int, t float64, cheat *bool) {
 	}
 	crrctFL := float64(ttl - wrng)
 	ttlFl := float64(ttl)
-	tbutil.Write(60, 2, tb.ColorBlue, tbutil.COLDEF, fmt.Sprintf("Words missed: %d", wrng))
+	tbutil.Write(60, 2, tbutil.COLDEF, tbutil.COLDEF, fmt.Sprintf("Words missed: %d", wrng))
 	log.Printf("[analysis]: Words missed: %d", wrng)
-	tbutil.Write(60, 3, tb.ColorBlue, tbutil.COLDEF, fmt.Sprintf("Accuracy: %% %.2f", crrctFL/ttlFl*100))
+	tbutil.Write(60, 3, tbutil.COLDEF, tbutil.COLDEF, fmt.Sprintf("Accuracy: %% %.2f", crrctFL/ttlFl*100))
 	log.Printf("[analysis]: Accuracy: %% %.2f", crrctFL/ttlFl*100)
-	tbutil.Write(60, 4, tb.ColorBlue, tbutil.COLDEF, fmt.Sprintf("Adjusted words per minute: %.2f", crrctFL/t*60))
+	tbutil.Write(60, 4, tbutil.COLDEF, tbutil.COLDEF, fmt.Sprintf("Adjusted words per minute: %.2f", crrctFL/t*60))
 	log.Printf("[analysis]: Adjusted words per minute: %.2f", crrctFL/t*60)
 }
 
@@ -59,25 +60,25 @@ func TbprintStats(wrds []string, t float64, cheat *bool) {
 
 	tb.Clear(tbutil.COLDEF, tbutil.COLDEF)
 	tb.HideCursor()
-	tbutil.Write(0, 0, tb.ColorBlue, tbutil.COLDEF, fmt.Sprintf("Seconds to complete: %.2f", t))
+	tbutil.Write(0, 0, tbutil.COLDEF, tbutil.COLDEF, fmt.Sprintf("Seconds to complete: %.2f", t))
 
 	if *cheat {
 		t /= 3
 		log.Printf("[analysis]: Cheat mode enabled: Calculating for time %.2f (test duration / 3)", t)
 	}
 
-	tbutil.Write(0, 2, tb.ColorBlue, tbutil.COLDEF, fmt.Sprintf("Words written: %d", wordLen))
+	tbutil.Write(0, 2, tbutil.COLDEF, tbutil.COLDEF, fmt.Sprintf("Words written: %d", wordLen))
 	log.Printf("[analysis]: Words written: %d", charLen)
-	tbutil.Write(0, 3, tb.ColorBlue, tbutil.COLDEF, fmt.Sprintf("Words per second: %.2f", wordLenFl/t))
+	tbutil.Write(0, 3, tbutil.COLDEF, tbutil.COLDEF, fmt.Sprintf("Words per second: %.2f", wordLenFl/t))
 	log.Printf("[analysis]: Words per second: %.2f", wordLenFl/t)
-	tbutil.Write(0, 4, tb.ColorBlue, tbutil.COLDEF, fmt.Sprintf("Words per minute: %.2f", wordLenFl/t*60))
+	tbutil.Write(0, 4, tbutil.COLDEF, tbutil.COLDEF, fmt.Sprintf("Words per minute: %.2f", wordLenFl/t*60))
 	log.Printf("[analysis]: Words per minute: %.2f", wordLenFl/t*60)
 
-	tbutil.Write(27, 2, tb.ColorBlue, tbutil.COLDEF, fmt.Sprintf("Characters written: %d", charLen))
+	tbutil.Write(27, 2, tbutil.COLDEF, tbutil.COLDEF, fmt.Sprintf("Characters written: %d", charLen))
 	log.Printf("[analysis]: Characters written: %d", charLen)
-	tbutil.Write(27, 3, tb.ColorBlue, tbutil.COLDEF, fmt.Sprintf("Characters per second: %.2f", charLenFl/t))
+	tbutil.Write(27, 3, tbutil.COLDEF, tbutil.COLDEF, fmt.Sprintf("Characters per second: %.2f", charLenFl/t))
 	log.Printf("[analysis]: Characters per second: %.2f", charLenFl/t)
-	tbutil.Write(27, 4, tb.ColorBlue, tbutil.COLDEF, fmt.Sprintf("Characters per minute: %.2f", charLenFl/t*60))
+	tbutil.Write(27, 4, tbutil.COLDEF, tbutil.COLDEF, fmt.Sprintf("Characters per minute: %.2f", charLenFl/t*60))
 	log.Printf("[analysis]: Characters per minute: %.2f", charLenFl/t*60)
 
 	tbutil.Write(0, 6, tbutil.COLDEF, tbutil.COLDEF, "Press the enter key to end the program...")

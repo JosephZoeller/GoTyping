@@ -22,7 +22,7 @@ func ShowPreface(username string, free bool) {
 	}
 	pre := fmt.Sprintf("Welcome to my typing speed test, %s. This program will count down from %d, and then it will measure how fast you can type words. %s"+
 		" When you're ready, press any key to begin...", username, cd, freestr)
-	tbutil.Write(0, 0, tb.ColorBlue, tbutil.COLDEF, pre)
+	tbutil.Write(0, 0, tbutil.COLDEF, tbutil.COLDEF, pre)
 	tbutil.KeyContinue(false)
 
 	tbutil.CountDown(0, 0, 3, "%s", nil)

@@ -14,7 +14,7 @@ import (
 func main() {
 	file, logcrerr := os.Create(LOGFILE)
 	if logcrerr != nil {
-		log.Fatal(logcrerr.Error())
+		log.Fatal(logcrerr)
 	}
 	log.SetOutput(file)
 	log.Println("[main]: Program Start...")
@@ -22,7 +22,7 @@ func main() {
 
 	err := termbox.Init()
 	if err != nil {
-		log.Fatalln(err.Error())
+		log.Fatalln(err)
 	}
 	defer termbox.Close()
 	termbox.SetInputMode(termbox.InputEsc)
@@ -48,16 +48,16 @@ func main() {
 		dur = 30
 	}
 
-	// test briefing
+	// briefing
 	log.Println("[main]: Displaying preface...")
 	phase.ShowPreface(*user, *freestyle)
 
-	// test
+	// user input
 	log.Printf("[main]: Beginning test... [User: %s, Duration: %d, Freestyle: %t, Verbose: %t, Cheat: %t]", *user, dur, *freestyle, *debug, *cheat)
 	uwrds, wrngCnt, t := phase.RunTypeTest(dur, freestyle, debug, sentences)
 	log.Printf("[main]: Test Complete...")
 
-	// test debriefing
+	// debriefing
 	log.Println("[main]: Displaying speed statistics...")
 	phase.TbprintStats(uwrds, t, cheat)
 	if !*freestyle {
