@@ -2,13 +2,13 @@ I ate lunch with my friends.
 He told me about his trip to Germany.
 Every Go program is made up of packages.
 I can hold my breath underwater for two minutes!
-You can add your own writing prompts. Check out sentences.txt!
+Did you know? You can add your own writing prompts to this test!
 Is math related to science?
 Where did the time go? We may never know.
 Brad invited me to the bar, but I declined.
 Someday, I would like to visit Indonesia.
 My face turned to stone when I heard the news.
-I recieved a letter in the mail.
+I received a letter in the mail.
 My neighbor knocked on my door last night.
 The quick brown fox jumps over the lazy dog.
 Creating writing prompts is harder than I thought it would be!

@@ -10,6 +10,7 @@ import (
 	tbutil "github.com/JosephZoeller/project-0/pkg/termboxutil"
 	"github.com/JosephZoeller/project-0/pkg/timer"
 )
+
 // loopTestInput accepts user input for a predetermined duration and returns all of the text written as a slice of strings delimited by the ' ' characters.
 // Accepts a duration in seconds (integer), a freestyle mode (boolean), and the writing prompt sentences ([]string).
 // If freestyle is set to false, freestyle mode is off. Instead, the user is prompted to copy prewritten sentences (from the sentences.txt) into the terminal.
@@ -30,6 +31,9 @@ func loopTestInput(dur int, free, verb bool, sentences []string) ([]string, int)
 	t, _ := timer.CheckStopWatch()
 	for {
 		if er != nil || t >= float64(dur) {
+			if er != nil {
+				log.Println("[typetest]: " + er.Error())
+			}
 			log.Println("[typetest]: Exiting main loop, stopping timer goroutine.")
 			cdQuit <- true
 			break
