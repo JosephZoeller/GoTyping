@@ -22,9 +22,9 @@ The typing test accepts numerous arguments:
 
   * User - Defaults to the Operating System's current username. (default "Joseph")
 
-**-debug**
+**-v**
 
-  * Debug - Displays under-the-hood details during the test.
+  * Verbose - Displays under-the-hood details during the test.
 
 **-c**   
 
@@ -38,8 +38,8 @@ The typing test accepts numerous arguments:
 - [X] API Library (Stopwatch, countdown)
 - [x] CLI flags (Timer, freestyle/sentence reference)
 - [x] Environment variables (user)
-- [x] Concurrency (Timer)
-- [x] Data Persistance (reference sentences, TODO user averages/statistics)
+- [x] Concurrency (countdown)
+- [x] Data Persistance (reference sentences, settings config TODO user averages/statistics)
 - [ ] HTTP/HTTPS API (TODO user averages/statistics)
 
 ## Presentation
