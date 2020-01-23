@@ -4,15 +4,17 @@ This interactive CLI Program allows the user to test their typing skills using [
 ## Getting started
 Upon running the application, the user is immediately met with a preface message with instructions for how to take the test. By default, the test will prompt the user with sentences to type, for 30 seconds. Once completed, the program will display statistics about the user's performance.
 
+This typing evaluation is customizable. The user can modify the test duration, the writing prompts, the testing mode and other miscellanious variables. The default settings (such as the 30 second duration) can be customized through the config.json file, or passed in directly as arguments.
+
 ### Installation
 Install this go package with `go get -u github.com/JosephZoeller/project-0` and termbox-go with `go get -u github.com/nsf/termbox-go`
 
-## Command-line args
+## Command-line args / config.json
 The typing test accepts numerous arguments:
 
 **-d ##:##**
 
-  * Duration - The length of time that the typing test will last. Format as <Minutes>:<Seconds> (default "0:30")
+  * Duration - The length of time that the typing test will last. Format as \<Minutes>:\<Seconds> (default "0:30")
 
 **-f**
 
