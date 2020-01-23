@@ -73,7 +73,7 @@ func TbprintStats(wrds []string, t float64, cheat *bool) {
 	}
 
 	tbutil.Write(0, 2, tbutil.COLDEF, tbutil.COLDEF, fmt.Sprintf("Words written: %d", wordLen))
-	log.Printf("[analysis]: Words written: %d", charLen)
+	log.Printf("[analysis]: Words written: %d", wordLen)
 	tbutil.Write(0, 3, tbutil.COLDEF, tbutil.COLDEF, fmt.Sprintf("Words per second: %.2f", wordLenFl/t))
 	log.Printf("[analysis]: Words per second: %.2f", wordLenFl/t)
 	tbutil.Write(0, 4, tbutil.COLDEF, tbutil.COLDEF, fmt.Sprintf("Words per minute: %.2f", wordLenFl/t*60))
