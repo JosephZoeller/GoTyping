@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/JosephZoeller/project-0/cmd/phase"
+	"github.com/JosephZoeller/project-0/pkg/timer"
 	//tbutil "github.com/JosephZoeller/project-0/pkg/termboxutil"
 	"github.com/nsf/termbox-go"
 )
@@ -35,7 +36,7 @@ func main() {
 	}
 	save := phase.SavePrompt()
 	if save {
-		phase.SaveToFile(uwrds, wrngCnt, t)
+		phase.SaveToFile(timer.GetDateFmt(), *user, uwrds, wrngCnt, t)
 		log.Println("[main]: Saving...")
 	} else {
 		log.Println("[main]: Ending without saving")
