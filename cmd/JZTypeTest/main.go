@@ -30,6 +30,8 @@ func main() {
 	if !*freestyle {
 		log.Println("[main]: Displaying accuracy statistics...")
 		phase.TbprintAccur(len(uwrds), wrngCnt, t, cheat)
+	} else {
+		wrngCnt = -1
 	}
 	save := phase.SavePrompt()
 	if save {
