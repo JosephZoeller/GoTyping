@@ -3,11 +3,11 @@ package phase
 import "os"
 
 import "encoding/json"
-
+import "math"
 import "log"
 
 type saveFile struct {
-	PromptSaves    []testStats `json:"PromptTests"`
+	PTests    []testStats `json:"PromptTests"`
 	FreestyleSaves []testStats `json:"FreestyleTests"`
 }
 
@@ -28,20 +28,20 @@ func SaveToFile(wrds []string, msCount int, t float64) { // decode if one exists
 	wordCount := len(wrds)
 	runeCount := getByteCount(wrds)
 
-	exstSave := saveFile{}
+	saves := saveFile{}
 	filename := "save.json"
 
 	file, er := os.Open(filename)
 	if er != nil {
 		log.Println(er)
-		file, _ = os.Create(filename)
+	} else {
+		er = json.NewDecoder(file).Decode(&saves)
+		if er != nil {
+			log.Println(er)
+		} else {
+			file.Close()
+		}
 	}
-	defer file.Close()
-	er = json.NewDecoder(file).Decode(&exstSave)
-	if er != nil {
-		log.Println(er)
-	}
-
 	var newSave testStats
 	if msCount > -1 { // prompted test
 		newSave = testStats{
@@ -50,28 +50,39 @@ func SaveToFile(wrds []string, msCount int, t float64) { // decode if one exists
 			Words:  wordCount,
 			Runes:  runeCount,
 			Missed: msCount,
-			Time:   t,
-			Wpm:    (float64(wordCount) / t * 60),
-			Awpm:   (float64(wordCount-msCount) / t * 60),
-			Cpm:    (float64(runeCount) / t * 60),
-			Acpm:   ((float64(runeCount) - (float64(msCount) * 4.7)) / t * 60), // fun fact, the average length of an english word is 4.7 characters. Haven't decided how to weight characters missed
+			Time:   math.Round(t*100) / 100,
+			Wpm:    math.Round(float64(wordCount)/t*6000) / 100,
+			Awpm:   math.Round(float64(wordCount-msCount)/t*6000) / 100,
+			Cpm:    math.Round(float64(runeCount)/t*6000) / 100,
+			Acpm:   math.Round((float64(runeCount)-(float64(msCount)*4.7))/t*6000) / 100, // fun fact, the average length of an english word is 4.7 characters. Haven't decided how to weight characters missed
 		}
-		if len(exstSave.PromptSaves) > 0 {
-			for i, sv := range exstSave.PromptSaves {
+		if len(saves.PTests) > 0 {
+			for i, sv := range saves.PTests {
 				if sv.Acpm >= newSave.Acpm {
-
-					k := exstSave.PromptSaves[i:len(exstSave.PromptSaves)]
-					exstSave.PromptSaves = append(exstSave.PromptSaves[0:i], newSave)
-					exstSave.PromptSaves = append(exstSave.PromptSaves, k...)
+					log.Println("sv acpm >= newsave acpm")
+					f := saves.PTests[0:i]
+					log.Println(f)
+					l := make([]testStats, len(saves.PTests[i:len(saves.PTests)]))
+					copy(l, saves.PTests[i:len(saves.PTests)])
+					log.Println(l)
+					f = append(f, newSave)
+					log.Println(f)
+					f = append(f, l...)
+					log.Println(f)
+					saves.PTests = f
 					break
-				} else if i == len(exstSave.PromptSaves)-1 {
-					exstSave.PromptSaves = append(exstSave.PromptSaves, newSave)
+				} else if i == len(saves.PTests)-1 {
+					log.Println("i == len")
+					f := append(saves.PTests, newSave)
+					log.Println(f)
+					saves.PTests = f 
 					break
 				}
 			}
 		} else {
-			exstSave.PromptSaves = make([]testStats, 1)
-			exstSave.PromptSaves[0] = newSave
+			log.Println("make PTests")
+			saves.PTests = make([]testStats, 1)
+			saves.PTests[0] = newSave
 		}
 	} else {
 		newSave = testStats{
@@ -87,8 +98,10 @@ func SaveToFile(wrds []string, msCount int, t float64) { // decode if one exists
 			Acpm:   0, // fun fact, the average length of an english word is 4.7 characters. Haven't decided how to weight characters missed
 		}
 	}
-
-	er = json.NewEncoder(file).Encode(exstSave)
+	file, _ = os.Create(filename)
+	en := json.NewEncoder(file)
+	en.SetIndent("", "  ")
+	er = en.Encode(saves)
 	if er != nil {
 		log.Println(er)
 	}
