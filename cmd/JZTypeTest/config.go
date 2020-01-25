@@ -24,11 +24,13 @@ var LogFile *os.File
 var user *string
 var freestyle, debug, cheat *bool
 var duration int
+var port *int
 
 var sentences []string
 
 type configJson struct {
 	SentenceFile     string `json:"sentencePrompts"`
+	Port             int    `json:"port"`
 	DefaultDuration  string `json:"duration"`
 	DefaultFreestyle bool   `json:"freestyle"`
 	DefaultVerbose   bool   `json:"verbose"`
@@ -66,6 +68,7 @@ func config() {
 
 	log.Println("[config]: Parsing arguments")
 	user = flag.String("u", strings.Title(getDefaultName()), "User - Defaults to the Operating System's current username.")
+	port = flag.Int("p", c.Port, "Port - Sets a port for the application to communicate with.")
 	freestyle = flag.Bool("f", c.DefaultFreestyle, "Freestyle - Removes the writing prompt. The user can type without restriction and accuracy won't be measured.")
 	debug = flag.Bool("v", c.DefaultVerbose, "Verbose - Displays under-the-hood details during the test.")
 	cheat = flag.Bool("c", c.DefaultCheat, "Cheat - Fudges the test results to impress your peers.")
@@ -81,6 +84,7 @@ func config() {
 
 func setFallBackDefaults(c *configJson) {
 	c.SentenceFile = "sentences.txt"
+	c.Port = 8080
 	c.DefaultDuration = "0:30"
 	c.DefaultFreestyle = false
 	c.DefaultVerbose = false
