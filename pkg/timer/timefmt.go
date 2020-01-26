@@ -2,8 +2,10 @@
 package timer
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // ParseCountDown attempts to parse a time format into seconds.
@@ -25,4 +27,9 @@ func ParseCountDown(a string) (int, error) {
 		}
 	}
 	return s, nil
+}
+
+func GetDateFmt() string {
+	y, m, d := time.Now().Date()
+	return fmt.Sprintf("%d/%d/%d", m, d, y)
 }
