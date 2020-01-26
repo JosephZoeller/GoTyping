@@ -1,10 +1,13 @@
 package phase
 
-import "os"
-
-import "encoding/json"
-import "math"
-import "log"
+import (
+	"encoding/json"
+	"html/template"
+	"log"
+	"math"
+	"net/http"
+	"os"
+)
 
 type saveFile struct {
 	PTests []testResults `json:"PromptTests"`
@@ -117,5 +120,14 @@ func SaveToFile(date, user string, wrds []string, msCount int, t float64) { // d
 	if er != nil {
 		log.Println(er)
 	}
+	doHttpStuff(saves)
+}
 
+func doHttpStuff(saves saveFile) {
+	http.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
+		t, _ := template.ParseFiles("../../web/tables.html")
+		t.Execute(res, saves)
+	})
+	
+	http.ListenAndServe(":8080", nil)
 }

@@ -31,18 +31,20 @@
                 <th>Characters/Minute</th>
                 <th>Adjusted Characters/Minute</th>
             </tr>
+            {{range .PTests}}
             <tr>
-                <td>1/25/2020</td> <!--table data-->
-                <td>Joseph</td>
-                <td>10</td>
-                <td>47</td>
-                <td>0</td>
-                <td>10</td>
-                <td>1.00</td>
-                <td>1.00</td>
-                <td>4.7</td>
-                <td>4.7</td>
+                <td>{{.Date}}</td>
+                <td>{{.User}}</td>
+                <td>{{.Words}}</td>
+                <td>{{.Runes}}</td>
+                <td>{{.Missed}}</td>
+                <td>{{.Time}}</td>
+                <td>{{.Wpm}}</td>
+                <td>{{.Awpm}}</td>
+                <td>{{.Cpm}}</td>
+                <td>{{.Acpm}}</td>
             </tr>
+            {{end}}
         </table>
         <h2>Freestyle Tests</h2>
         <table>
@@ -55,15 +57,17 @@
                 <th>Words/Minute</th>
                 <th>Characters/Minute</th>
             </tr>
+            {{range .FTests}}
             <tr>
-                <td>1/25/2020</td>
-                <td>Joseph</td>
-                <td>10</td>
-                <td>47</td>
-                <td>10</td>
-                <td>1.00</td>
-                <td>4.7</td>
+                <td>{{.Date}}</td>
+                <td>{{.User}}</td>
+                <td>{{.Words}}</td>
+                <td>{{.Runes}}</td>
+                <td>{{.Time}}</td>
+                <td>{{.Wpm}}</td>
+                <td>{{.Cpm}}</td>
             </tr>
+            {{end}}
         </table>
     </body>
 </html>
