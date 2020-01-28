@@ -2,9 +2,9 @@
 package main
 
 import (
-	"log"
 	"github.com/JosephZoeller/project-0/cmd/phase"
 	"github.com/JosephZoeller/project-0/pkg/timer"
+	"log"
 	//tbutil "github.com/JosephZoeller/project-0/pkg/termboxutil"
 	"github.com/nsf/termbox-go"
 )
@@ -30,16 +30,20 @@ func main() {
 	if !*freestyle {
 		log.Println("[main]: Displaying accuracy statistics...")
 		phase.TbprintAccur(len(uwrds), wrngCnt, t, cheat)
-	} else {
-		wrngCnt = -1
 	}
-	save := phase.SavePrompt()
+
+	save := false
+	if !*freestyle {
+		save = phase.SavePrompt()
+	}
+
 	if save {
 		log.Println("[main]: Saving...")
-		phase.SaveToFile(timer.GetDateFmt(), *user, uwrds, wrngCnt, t)
+		phase.AppendSave(timer.GetDateFmt(), *user, uwrds, wrngCnt, t)
 	} else {
 		log.Println("[main]: Ending without saving")
 	}
+
 	phase.ExitPrompt()
 	log.Println("[main]: Exiting Program...")
 }

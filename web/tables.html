@@ -46,28 +46,5 @@
             </tr>
             {{end}}
         </table>
-        <h2>Freestyle Tests</h2>
-        <table>
-            <tr>
-                <th>Date</th> 
-                <th>User</th>
-                <th>Word Count</th>
-                <th>Rune Count</th>
-                <th>Time</th>
-                <th>Words/Minute</th>
-                <th>Characters/Minute</th>
-            </tr>
-            {{range .FTests}}
-            <tr>
-                <td>{{.Date}}</td>
-                <td>{{.User}}</td>
-                <td>{{.Words}}</td>
-                <td>{{.Runes}}</td>
-                <td>{{.Time}}</td>
-                <td>{{.Wpm}}</td>
-                <td>{{.Cpm}}</td>
-            </tr>
-            {{end}}
-        </table>
     </body>
 </html>
