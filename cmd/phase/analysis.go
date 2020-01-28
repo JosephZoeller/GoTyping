@@ -25,7 +25,7 @@ func getDiscrepancyCount(userWords, prgmWords []string) int {
 	return wrong
 }
 
-func getByteCount(strslice []string) int {
+func GetByteCount(strslice []string) int {
 	count := 0
 	for _, str := range strslice {
 		count += len(str)
@@ -60,7 +60,7 @@ func TbprintAccur(ttl, wrng int, t float64, cheat *bool) {
 func TbprintStats(wrds []string, t float64, cheat *bool) {
 	wordLen := len(wrds)
 	wordLenFl := float64(wordLen)
-	charLen := getByteCount(wrds)
+	charLen := GetByteCount(wrds)
 	charLenFl := float64(charLen)
 
 	tb.Clear(tbutil.COLDEF, tbutil.COLDEF)

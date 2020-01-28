@@ -39,7 +39,7 @@ func main() {
 
 	if save {
 		log.Println("[main]: Saving...")
-		phase.AppendSave(timer.GetDateFmt(), *user, uwrds, wrngCnt, t)
+		phase.SendSave(timer.GetDateFmt(), *user, uwrds, wrngCnt, t)
 	} else {
 		log.Println("[main]: Ending without saving")
 	}
