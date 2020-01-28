@@ -8,10 +8,14 @@
               font-family: arial, sans-serif;
               border-collapse:collapse;
             }
+            h2 {
+              text-align:left;
+              padding: 8px;
+            }
             
             td, th {
               border: 1px solid #dddddd;
-              text-align: left;
+              text-align:center;
               padding: 6px;
             }
         </style>
@@ -25,7 +29,7 @@
                 <th>Word Count</th>
                 <th>Rune Count</th>
                 <th>Missed Words</th>
-                <th>Time</th>
+                <th>Time (S)</th>
                 <th>Words/Minute</th>
                 <th>Adjusted Words/Minute</th>
                 <th>Characters/Minute</th>
@@ -40,9 +44,9 @@
                 <td>{{.Missed}}</td>
                 <td>{{.Time}}</td>
                 <td>{{.Wpm}}</td>
-                <td>{{.Awpm}}</td>
+                <td><i>{{.Awpm}}</i></td>
                 <td>{{.Cpm}}</td>
-                <td>{{.Acpm}}</td>
+                <td><b>{{.Acpm}}</b></td>
             </tr>
             {{end}}
         </table>

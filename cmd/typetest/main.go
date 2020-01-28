@@ -2,10 +2,10 @@
 package main
 
 import (
-	"github.com/JosephZoeller/project-0/cmd/phase"
-	"github.com/JosephZoeller/project-0/pkg/timer"
+	"github.com/JosephZoeller/GoTyping/cmd/phase"
+	"github.com/JosephZoeller/GoTyping/pkg/timer"
 	"log"
-	//tbutil "github.com/JosephZoeller/project-0/pkg/termboxutil"
+	//tbutil "github.com/JosephZoeller/GoTyping-0/pkg/termboxutil"
 	"github.com/nsf/termbox-go"
 )
 

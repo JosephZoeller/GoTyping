@@ -4,7 +4,7 @@ package phase
 import (
 	"fmt"
 
-	tbutil "github.com/JosephZoeller/project-0/pkg/termboxutil"
+	tbutil "github.com/JosephZoeller/GoTyping/pkg/termboxutil"
 	tb "github.com/nsf/termbox-go"
 )
 

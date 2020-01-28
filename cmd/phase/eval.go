@@ -7,8 +7,8 @@ import (
 	"math/rand"
 	"strings"
 
-	tbutil "github.com/JosephZoeller/project-0/pkg/termboxutil"
-	"github.com/JosephZoeller/project-0/pkg/timer"
+	tbutil "github.com/JosephZoeller/GoTyping/pkg/termboxutil"
+	"github.com/JosephZoeller/GoTyping/pkg/timer"
 )
 
 // loopTestInput accepts user input for a predetermined duration and returns all of the text written as a slice of strings delimited by the ' ' characters.

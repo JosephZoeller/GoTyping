@@ -3,7 +3,7 @@ package termboxutil
 
 import (
 	"errors"
-	"github.com/JosephZoeller/project-0/pkg/timer"
+	"github.com/JosephZoeller/GoTyping/pkg/timer"
 	"log"
 
 	"github.com/nsf/termbox-go"

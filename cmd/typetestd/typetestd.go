@@ -9,19 +9,20 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/JosephZoeller/project-0/cmd/phase"
+	"github.com/JosephZoeller/GoTyping/cmd/phase"
 )
 
 func main() {
-	saves, er := phase.GetSave()
-	if er != nil {
-		log.Println(er)
-	}
-	hostSave(saves)
+	hostSave()
 }
 
-func hostSave(saves *phase.SaveFile) {
+func hostSave() {
 	http.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
+		saves, er := phase.GetSave()
+		if er != nil {
+			log.Println(er)
+		}
+
 		log.Println("Displaying content")
 		t, _ := template.ParseFiles("../../web/tables.html")
 		t.Execute(res, *saves)
