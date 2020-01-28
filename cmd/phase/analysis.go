@@ -73,7 +73,7 @@ func TbprintStats(wrds []string, t float64, cheat *bool) {
 	}
 
 	tbutil.Write(0, 2, tbutil.COLDEF, tbutil.COLDEF, fmt.Sprintf("Words written: %d", wordLen))
-	log.Printf("[analysis]: Words written: %d", charLen)
+	log.Printf("[analysis]: Words written: %d", wordLen)
 	tbutil.Write(0, 3, tbutil.COLDEF, tbutil.COLDEF, fmt.Sprintf("Words per second: %.2f", wordLenFl/t))
 	log.Printf("[analysis]: Words per second: %.2f", wordLenFl/t)
 	tbutil.Write(0, 4, tbutil.COLDEF, tbutil.COLDEF, fmt.Sprintf("Words per minute: %.2f", wordLenFl/t*60))
@@ -85,6 +85,21 @@ func TbprintStats(wrds []string, t float64, cheat *bool) {
 	log.Printf("[analysis]: Characters per second: %.2f", charLenFl/t)
 	tbutil.Write(27, 4, tbutil.COLDEF, tbutil.COLDEF, fmt.Sprintf("Characters per minute: %.2f", charLenFl/t*60))
 	log.Printf("[analysis]: Characters per minute: %.2f", charLenFl/t*60)
+}
 
+func SavePrompt() bool {
+	tbutil.Write(0, 6, tbutil.COLDEF, tbutil.COLDEF, "Would you like to save your results? [Y/N]")
+	for {
+		ans := tbutil.KeyContinue(false)
+		if (ans == 'Y' || ans == 'y') {
+			return true
+		} else if (ans == 'N' || ans == 'n') {
+			return false
+		}
+	}
+}
+
+func ExitPrompt() {
 	tbutil.Write(0, 6, tbutil.COLDEF, tbutil.COLDEF, "Press the enter key to end the program...")
+	tbutil.KeyContinue(true)
 }

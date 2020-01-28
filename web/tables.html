@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Saved Test Stats</title>
+        <style>
+            table {
+              font-family: arial, sans-serif;
+              border-collapse:collapse;
+            }
+            
+            td, th {
+              border: 1px solid #dddddd;
+              text-align: left;
+              padding: 6px;
+            }
+        </style>
+    </head>
+    <body>
+        <h2>Prompt-Matching Tests</h2>
+        <table>
+            <tr> <!--table row-->
+                <th>Date</th> <!--table header-->
+                <th>User</th>
+                <th>Word Count</th>
+                <th>Rune Count</th>
+                <th>Missed Words</th>
+                <th>Time</th>
+                <th>Words/Minute</th>
+                <th>Adjusted Words/Minute</th>
+                <th>Characters/Minute</th>
+                <th>Adjusted Characters/Minute</th>
+            </tr>
+            {{range .PTests}}
+            <tr>
+                <td>{{.Date}}</td>
+                <td>{{.User}}</td>
+                <td>{{.Words}}</td>
+                <td>{{.Runes}}</td>
+                <td>{{.Missed}}</td>
+                <td>{{.Time}}</td>
+                <td>{{.Wpm}}</td>
+                <td>{{.Awpm}}</td>
+                <td>{{.Cpm}}</td>
+                <td>{{.Acpm}}</td>
+            </tr>
+            {{end}}
+        </table>
+    </body>
+</html>
