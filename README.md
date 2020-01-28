@@ -1,5 +1,5 @@
-# Typing Test - project-0
-This interactive CLI Program allows the user to test their typing skills using [termbox-go](https://github.com/nsf/termbox-go) for real-time input and statistics.
+# GoTyping - CLI Typing Test
+This interactive Go program allows the user to test their typing skills using [termbox-go](https://github.com/nsf/termbox-go) for real-time input and statistics.
 
 ## Getting started
 Upon running the application, the user is immediately met with a preface message with instructions for how to take the test. By default, the test will prompt the user with sentences to type, for 30 seconds. Once completed, the program will display statistics about the user's performance.
@@ -40,11 +40,11 @@ The typing test accepts numerous arguments:
 - [x] Environment variables (user)
 - [x] Concurrency (Timer)
 - [x] Data Persistance (reference sentences, TODO user averages/statistics)
-- [ ] HTTP/HTTPS API (TODO user averages/statistics)
+- [x] HTTP API (TODO user averages/statistics)
 
 ## Presentation
-- [ ] 5 minute live demonstration
-- [ ] Slides & visual aides
+- [x] 5 minute live demonstration
+- [x] Slides & visual aides
 
 ## Found a bug?
 
