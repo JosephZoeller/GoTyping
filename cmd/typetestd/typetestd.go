@@ -41,13 +41,14 @@ func loadFile() (*SaveFile, error) {
 
 	file, er := os.Open(savefilename)
 	if er != nil {
-		return nil, er
+		return &saves, er
+	} else {
+		defer file.Close()
 	}
-	defer file.Close()
 
 	er = json.NewDecoder(file).Decode(&saves)
 	if er != nil {
-		return nil, er
+		return &saves, er
 	}
 
 	return &saves, nil
@@ -77,7 +78,7 @@ func hostSave() {
 		}
 
 		log.Println("Displaying Content")
-		t, _ := template.ParseFiles("../../web/tables.html")
+		t, _ := template.ParseFiles("./web/tables.html")
 		t.Execute(res, *saves)
 	})
 
@@ -129,48 +130,48 @@ func AppendSave(tup phase.TestUpload) {
 	saves, er := loadFile()
 	if er != nil {
 		log.Println(er)
-	} else {
-
-		var newSave TestResults
-		newSave = TestResults{
-			Date:   tup.Date,
-			User:   tup.User,
-			Words:  wordCount,
-			Runes:  runeCount,
-			Missed: tup.Missed,
-			Time:   math.Round(tup.Time*100) / 100,
-			Wpm:    math.Round(float64(wordCount)/tup.Time*6000) / 100,
-			Awpm:   math.Round(float64(wordCount-tup.Missed)/tup.Time*6000) / 100,
-			Cpm:    math.Round(float64(runeCount)/tup.Time*6000) / 100,
-			Acpm:   math.Round((float64(runeCount)-(float64(tup.Missed)*4.7))/tup.Time*6000) / 100, // fun fact, the average length of an english word is 4.7 characters. Haven't decided how to weight characters missed
-		}
-
-		if len(saves.PTests) > 0 {
-			for i, sv := range saves.PTests {
-				if sv.Acpm >= newSave.Acpm {
-					f := saves.PTests[0:i]
-					l := make([]TestResults, len(saves.PTests[i:len(saves.PTests)]))
-					copy(l, saves.PTests[i:len(saves.PTests)])
-					f = append(f, newSave)
-					f = append(f, l...)
-					saves.PTests = f
-					break
-				} else if i == len(saves.PTests)-1 {
-					f := append(saves.PTests, newSave)
-					saves.PTests = f
-					break
-				}
-			}
-		} else {
-			saves.PTests = make([]TestResults, 1)
-			saves.PTests[0] = newSave
-		}
-
-		er = saveFile(saves)
-		if er != nil {
-			log.Println(er)
-		} else {
-			log.Println("Content Updated")
-		}
 	}
+
+	var newSave TestResults
+	newSave = TestResults{
+		Date:   tup.Date,
+		User:   tup.User,
+		Words:  wordCount,
+		Runes:  runeCount,
+		Missed: tup.Missed,
+		Time:   math.Round(tup.Time*100) / 100,
+		Wpm:    math.Round(float64(wordCount)/tup.Time*6000) / 100,
+		Awpm:   math.Round(float64(wordCount-tup.Missed)/tup.Time*6000) / 100,
+		Cpm:    math.Round(float64(runeCount)/tup.Time*6000) / 100,
+		Acpm:   math.Round((float64(runeCount)-(float64(tup.Missed)*4.7))/tup.Time*6000) / 100, // fun fact, the average length of an english word is 4.7 characters. Haven't decided how to weight characters missed
+	}
+
+	if len(saves.PTests) > 0 {
+		for i, sv := range saves.PTests {
+			if sv.Acpm >= newSave.Acpm {
+				f := saves.PTests[0:i]
+				l := make([]TestResults, len(saves.PTests[i:len(saves.PTests)]))
+				copy(l, saves.PTests[i:len(saves.PTests)])
+				f = append(f, newSave)
+				f = append(f, l...)
+				saves.PTests = f
+				break
+			} else if i == len(saves.PTests)-1 {
+				f := append(saves.PTests, newSave)
+				saves.PTests = f
+				break
+			}
+		}
+	} else {
+		saves.PTests = make([]TestResults, 1)
+		saves.PTests[0] = newSave
+	}
+
+	er = saveFile(saves)
+	if er != nil {
+		log.Println(er)
+	} else {
+		log.Println("Content Updated")
+	}
+
 }

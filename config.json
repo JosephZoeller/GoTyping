@@ -1,6 +1,6 @@
 {
     "sentencePrompts" : "sentences.txt",
-    "duration" : "0:30",
+    "duration" : "0:20",
     "freestyle" : false,
     "verbose" : false,
     "cheat" : false
