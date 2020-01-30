@@ -14,8 +14,8 @@ release_linux:
 
 release_windows:
 	mkdir -p ./Release_Build/windows-amd64/server/web/
-	env GOOS=windows GOARCH=amd64 go build -o ./Release_Build/windows-amd64/GoTyping ./cmd/typetest
-	env GOOS=windows GOARCH=amd64 go build -o ./Release_Build/windows-amd64/server/GoTyping-Server ./cmd/typetestd
+	env GOOS=windows GOARCH=amd64 go build -o ./Release_Build/windows-amd64/GoTyping.exe ./cmd/typetest
+	env GOOS=windows GOARCH=amd64 go build -o ./Release_Build/windows-amd64/server/GoTyping-Server.exe ./cmd/typetestd
 	cp ./sentences.txt ./Release_Build/windows-amd64/sentences.txt
 	cp ./config.json ./Release_Build/windows-amd64/config.json
 	cp ./web/tables.html ./Release_Build/windows-amd64/server/web/tables.html
