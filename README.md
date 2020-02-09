@@ -7,7 +7,7 @@ Upon running the application, the user is immediately met with a preface message
 This typing evaluation is customizable. The user can modify the test duration, the writing prompts, the testing mode and other miscellanious variables. The default settings (such as the 30 second duration) can be customized through the config.json file, or passed in directly as arguments.
 
 ### Installation
-Install this go package with `go get -u github.com/JosephZoeller/project-0` and termbox-go with `go get -u github.com/nsf/termbox-go`
+Install this go package with `go get -u github.com/JosephZoeller/GoTyping` and termbox-go with `go get -u github.com/nsf/termbox-go`
 
 ## Command-line args / config.json
 The typing test accepts numerous arguments:
